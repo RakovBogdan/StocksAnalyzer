@@ -3,7 +3,11 @@ package com.stocksanalyzer;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * Created by BogdanRakov
+ * Created by RakovBogdan
+ * The stock contains fields:
+ * name
+ * symbol, also know as ticker
+ * MathStatics, which contains of statistics coefficients
  */
 public class Stock {
 
@@ -13,14 +17,6 @@ public class Stock {
     
     private MathStatistics statistics;
 
-    private double[] normProfit; //Норми прибутку для кожної акції
-    private double expectedValue; //Матиматичне сподівання M(x)
-    private double standardDeviation; //Середньоквадратичне відхилення Сігма(x)
-    private double variationCoefficient; // Коефіцієнт варіації CV(x)
-    private double normSkewness; // нормований коефіцієнт асиметрії IAs(x)
-    private double normKurtosis; // нормований Коефіцієнт Ексцесу IEs(x)
-    private double standardSemiVariance; // семіквадратичне відхилення SSV(x)
-    private double semiVariationCoefficient; // Коефіцієнт семіваріації CSV(x)
     private int score; // змінна, в яку буде записуватися кількість "очків" акції
     private double futureNormProfit; // прогнозоване значення очікуваного прибутку
 
@@ -40,31 +36,6 @@ public class Stock {
 
     public void setStatistics(MathStatistics statistics) {
         this.statistics = statistics;
-    }
-
-    public void setNormProfit(double[] normProfit) {
-        this.normProfit = normProfit;
-    }
-
-    public void setExpectedValue(double expectedValue) {
-        this.expectedValue = expectedValue;
-    }
-
-    public void setStandardDeviation(double standardDeviation) {
-        this.standardDeviation = standardDeviation;
-    }
-
-    public void setVariationCoefficient(double variationCoefficient) {
-        this.variationCoefficient = variationCoefficient;
-    }
-
-
-    public void setNormKurtosis(double normKurtosis) {
-        this.normKurtosis = normKurtosis;
-    }
-
-    public void setSemiVariationCoefficient(double semiVariationCoefficient) {
-        this.semiVariationCoefficient = semiVariationCoefficient;
     }
 
     public void setScore(int score) {
@@ -87,29 +58,6 @@ public class Stock {
         return this.prices;
     }
 
-    public double[] getNormProfit() {
-        return normProfit;
-    }
-
-    public double getExpectedValue() {
-        return expectedValue;
-    }
-
-    public double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    public double getVariationCoefficient() {
-        return variationCoefficient;
-    }
-
-    public double getNormKurtosis() {
-        return normKurtosis;
-    }
-
-    public double getSemiVariationCoefficient() {
-        return semiVariationCoefficient;
-    }
 
     public int getScore() {
         return score;
@@ -118,22 +66,5 @@ public class Stock {
     public double getFutureNormProfit() {
         return futureNormProfit;
     }
-
-    public double getNormSkewness() {
-        return normSkewness;
-    }
-
-    public void setNormSkewness(double normSkewness) {
-        this.normSkewness = normSkewness;
-    }
-
-    public double getStandardSemiVariance() {
-        return standardSemiVariance;
-    }
-
-    public void setStandardSemiVariance(double standardSemiVariance) {
-        this.standardSemiVariance = standardSemiVariance;
-    }
-
 
 }
