@@ -4,7 +4,10 @@ import java.util.stream.DoubleStream;
 
 /**
  * Created by RakovBogdan
- * Utility class with static methods for statistics calculations
+ * Class with static methods for statistics calculations
+ * has all statistics coefficients as fields
+ * has method evaluateStatistics which calculates ann coefficients at once
+ * constructor requires double array of data
  */
 public class MathStatistics {
 
@@ -13,6 +16,8 @@ public class MathStatistics {
     private double[] normProfit; //Норми прибутку для кожної акції
     private double mean; //Матиматичне сподівання M(x)
     private double standardDeviation; //Середньоквадратичне відхилення Сігма(x)
+    private double skewness; // коефіцієнт асиметрії As(x)
+    private double kurtosis; // коефіцієнт ексцесу Es(x)
     private double varianceCoefficient; // Коефіцієнт варіації CV(x)
     private double normSkewness; // нормований коефіцієнт асиметрії IAs(x)
     private double normKurtosis; // нормований Коефіцієнт Ексцесу IEs(x)
@@ -269,29 +274,37 @@ public class MathStatistics {
         return sum/(x.length-1);
     }
 
+    /*
+     * Evaluates and sets all Statistics coefficients for MathStatistics object
+     */
+    public void evaluateStatistics () {
+        normProfit = calculateNormProfit(data);
+        mean = mean(normProfit);
+        standardDeviation = calculateStandardDeviation(normProfit, mean);
+        varianceCoefficient = calculateVarianceCoefficient(standardDeviation, mean);
+        skewness = calculateSkewness(normProfit, standardDeviation, mean);
+        kurtosis = calculateKurtosis(normProfit, standardDeviation, mean);
+        normSkewness = calculateNormSkewness(normProfit, skewness);
+        normKurtosis = calculateNormKurtosis(normProfit, kurtosis);
+        standardSemiVariance = calculateStandardSemiVariance(normProfit, mean);
+        semiVarianceCoefficient = calculateVarianceCoefficient(standardDeviation, mean);
+    }
+
     //testing
     public static void main(String[] args) {
         double[] prices = {96.90, 97.41, 97.16, 97.00, 96.37,
                                 95.13, 95.00, 96.19, 97.30, 97.54};
-        double[] normProfit = calculateNormProfit(prices);
-
-        long startTime1 = System.currentTimeMillis();
-
-        DoubleStream.of(normProfit).forEach((element) -> System.out.print(element + ", "));
-        System.out.println();
-        System.out.println("Excpected value M(x):" + mean(normProfit));
-        System.out.println("Standard Deviation Sigma(x):" + calculateStandardDeviation(normProfit));
-        System.out.println("Variation Coefficient CV(x):" + calculateVarianceCoefficient(normProfit));
-        System.out.println("Skewness As(x):" + calculateSkewness(normProfit));
-        System.out.println("Kurtosis Es(x):" + calculateKurtosis(normProfit));
-        System.out.println("Normalized Skewnewss IAS(x):" + calculateNormSkewness(normProfit));
-        System.out.println("Normalized Kurtosis IEs(x):" + calculateNormKurtosis(normProfit));
-        System.out.println("Standard SemiVariance SSV(x):" + calculateStandardSemiVariance(normProfit));
-        System.out.println("SemiVariation Coefficient CSV(x):" + calculateSemiVariationCoefficient(normProfit));
-
-        long endTime1 = System.currentTimeMillis();
-        long dif1 = endTime1 - startTime1;
-        System.out.println("Time of calculation: " + dif1 + "ms");
+        MathStatistics stats = new MathStatistics(prices);
+        stats.evaluateStatistics();
+        System.out.println("Excpected value M(x):" + stats.mean);
+        System.out.println("Standard Deviation Sigma(x):" + stats.standardDeviation);
+        System.out.println("Variation Coefficient CV(x):" + stats.varianceCoefficient);
+        System.out.println("Skewness As(x):" + stats.skewness);
+        System.out.println("Kurtosis Es(x):" + stats.kurtosis);
+        System.out.println("Normalized Skewnewss IAS(x):" + stats.normSkewness);
+        System.out.println("Normalized Kurtosis IEs(x):" + stats.normKurtosis);
+        System.out.println("Standard SemiVariance SSV(x):" + stats.standardSemiVariance);
+        System.out.println("SemiVariation Coefficient CSV(x):" + stats.semiVarianceCoefficient);
 
 
     }
