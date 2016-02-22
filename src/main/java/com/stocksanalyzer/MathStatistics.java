@@ -24,6 +24,94 @@ public class MathStatistics {
     private double standardSemiVariance; // семіквадратичне відхилення SSV(x)
     private double semiVarianceCoefficient; // Коефіцієнт семіваріації CSV(x)
 
+    public double[] getData() {
+        return data;
+    }
+
+    public void setData(double[] data) {
+        this.data = data;
+    }
+
+    public double[] getNormProfit() {
+        return normProfit;
+    }
+
+    public void setNormProfit(double[] normProfit) {
+        this.normProfit = normProfit;
+    }
+
+    public double getMean() {
+        return mean;
+    }
+
+    public void setMean(double mean) {
+        this.mean = mean;
+    }
+
+    public double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public void setStandardDeviation(double standardDeviation) {
+        this.standardDeviation = standardDeviation;
+    }
+
+    public double getSkewness() {
+        return skewness;
+    }
+
+    public void setSkewness(double skewness) {
+        this.skewness = skewness;
+    }
+
+    public double getKurtosis() {
+        return kurtosis;
+    }
+
+    public void setKurtosis(double kurtosis) {
+        this.kurtosis = kurtosis;
+    }
+
+    public double getVarianceCoefficient() {
+        return varianceCoefficient;
+    }
+
+    public void setVarianceCoefficient(double varianceCoefficient) {
+        this.varianceCoefficient = varianceCoefficient;
+    }
+
+    public double getNormKurtosis() {
+        return normKurtosis;
+    }
+
+    public void setNormKurtosis(double normKurtosis) {
+        this.normKurtosis = normKurtosis;
+    }
+
+    public double getNormSkewness() {
+        return normSkewness;
+    }
+
+    public void setNormSkewness(double normSkewness) {
+        this.normSkewness = normSkewness;
+    }
+
+    public double getStandardSemiVariance() {
+        return standardSemiVariance;
+    }
+
+    public void setStandardSemiVariance(double standardSemiVariance) {
+        this.standardSemiVariance = standardSemiVariance;
+    }
+
+    public double getSemiVarianceCoefficient() {
+        return semiVarianceCoefficient;
+    }
+
+    public void setSemiVarianceCoefficient(double semiVarianceCoefficient) {
+        this.semiVarianceCoefficient = semiVarianceCoefficient;
+    }
+
     public MathStatistics(double[] data) {
         this.data = data;
     }

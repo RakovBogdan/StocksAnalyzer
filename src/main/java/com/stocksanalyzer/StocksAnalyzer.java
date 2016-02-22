@@ -36,24 +36,8 @@ public class StocksAnalyzer {
      */
     public void calculateStocksCoefficients() {
         allStocks.stream().forEach(stock -> {
-
-            stock.setNormProfit(MathStatistics.calculateNormProfit(stock.getPrices()));
-            stock.setExpectedValue(MathStatistics.mean(stock.getNormProfit()));
-            stock.setStandardDeviation(MathStatistics.calculateStandardDeviation(
-                    stock.getNormProfit(), stock.getExpectedValue()));
-            stock.setVariationCoefficient(MathStatistics.calculateVarianceCoefficient(
-                    stock.getStandardDeviation(), stock.getExpectedValue()));
-            double skewness = MathStatistics.calculateSkewness(
-                    stock.getNormProfit(), stock.getStandardDeviation(), stock.getExpectedValue());
-            stock.setNormSkewness(MathStatistics.calculateNormSkewness(stock.getNormProfit(), skewness));
-            double kurtosis = MathStatistics.calculateKurtosis(
-                    stock.getNormProfit(), stock.getStandardDeviation(), stock.getExpectedValue());
-            stock.setNormKurtosis(MathStatistics.calculateNormKurtosis(stock.getNormProfit(), kurtosis));
-            stock.setStandardSemiVariance(MathStatistics.calculateStandardSemiVariance(
-                    stock.getNormProfit(), stock.getExpectedValue()));
-            stock.setSemiVariationCoefficient(MathStatistics.calculateSemiVariationCoefficient(
-                    stock.getNormProfit(), stock.getStandardSemiVariance(), stock.getExpectedValue()));
-
+            MathStatistics stats = new MathStatistics(stock.getPrices());
+            stats.evaluateStatistics();
         });
     }
 
@@ -98,17 +82,6 @@ public class StocksAnalyzer {
         Stock mcDonalds = new Stock("McDonalds", "MCD", prices);
         analyzer.addStock(mcDonalds);
         analyzer.calculateStocksCoefficients();
-
-
-        analyzer.getStocks().stream().forEach(stock -> {
-            System.out.println(stock.getName()+":");
-            System.out.println("Excpected value M(x):" + stock.getExpectedValue());
-            System.out.println("Standard Deviation Sigma(x):" + stock.getStandardDeviation());
-            System.out.println("Variation Coefficient CV(x):" + stock.getVariationCoefficient());
-            System.out.println("Normalized Skewnewss IAs(x):" + stock.getNormSkewness());
-            System.out.println("Normalized Kurtosis IEs(x):" + stock.getNormKurtosis());
-            System.out.println("Standard SemiVariance SSV(x):" + stock.getStandardSemiVariance());
-            System.out.println("SemiVariation Coefficient CSV(x):" + stock.getSemiVariationCoefficient());
-        });
+        
     }
 }
