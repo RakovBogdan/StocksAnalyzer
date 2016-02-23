@@ -1,5 +1,6 @@
 package com.stocksanalyzer;
 
+import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
 /**
@@ -379,7 +380,8 @@ public class MathStatistics {
     }
 
     public String toString() {
-        return "Excpected value, mean, M(x):" + this.mean + "\n" +
+        return "Normalized profit, or price change:" + Arrays.toString(this.normProfit) + "\n" +
+        "Excpected value, mean, M(x):" + this.mean + "\n" +
         "Standard Deviation Sigma(x):" + this.standardDeviation + "\n" +
         "Coefficient of variation CV(x):" + this.varianceCoefficient + "\n" +
         "Skewness As(x):" + this.skewness + "\n" +
