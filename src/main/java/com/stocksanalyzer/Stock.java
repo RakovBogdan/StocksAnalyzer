@@ -67,4 +67,8 @@ public class Stock {
         return futureNormProfit;
     }
 
+    public MathStatistics getStatistics(MathStatistics statistics) {
+        return this.statistics;
+    }
+
 }
