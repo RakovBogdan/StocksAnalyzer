@@ -378,21 +378,25 @@ public class MathStatistics {
         semiVarianceCoefficient = calculateVarianceCoefficient(standardDeviation, mean);
     }
 
+    public String toString() {
+        return "Excpected value, mean, M(x):" + this.mean + "\n" +
+        "Standard Deviation Sigma(x):" + this.standardDeviation + "\n" +
+        "Coefficient of variation CV(x):" + this.varianceCoefficient + "\n" +
+        "Skewness As(x):" + this.skewness + "\n" +
+        "Kurtosis Es(x):" + this.kurtosis + "\n" +
+        "Normalized Skewnewss IAS(x):" + this.normSkewness + "\n" +
+        "Normalized Kurtosis IEs(x):" + this.normKurtosis + "\n" +
+        "Standard SemiVariance SSV(x):" + this.standardSemiVariance + "\n" +
+        "SemiVariation Coefficient CSV(x):" + this.semiVarianceCoefficient;
+    }
+
     //testing
     public static void main(String[] args) {
         double[] prices = {96.90, 97.41, 97.16, 97.00, 96.37,
                                 95.13, 95.00, 96.19, 97.30, 97.54};
         MathStatistics stats = new MathStatistics(prices);
         stats.evaluateStatistics();
-        System.out.println("Excpected value M(x):" + stats.mean);
-        System.out.println("Standard Deviation Sigma(x):" + stats.standardDeviation);
-        System.out.println("Variation Coefficient CV(x):" + stats.varianceCoefficient);
-        System.out.println("Skewness As(x):" + stats.skewness);
-        System.out.println("Kurtosis Es(x):" + stats.kurtosis);
-        System.out.println("Normalized Skewnewss IAS(x):" + stats.normSkewness);
-        System.out.println("Normalized Kurtosis IEs(x):" + stats.normKurtosis);
-        System.out.println("Standard SemiVariance SSV(x):" + stats.standardSemiVariance);
-        System.out.println("SemiVariation Coefficient CSV(x):" + stats.semiVarianceCoefficient);
+        System.out.println(stats);
 
 
     }
