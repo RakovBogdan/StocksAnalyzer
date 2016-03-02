@@ -14,7 +14,7 @@ public class MathStatistics {
 
     private double[] data;
 
-    private double[] normProfit; //Норми прибутку для кожної акції
+    private double[] normProfit; //Норми прибутку для кожної акції у %
     private double mean; //Матиматичне сподівання M(x)
     private double standardDeviation; //Середньоквадратичне відхилення Сігма(x)
     private double skewness; // коефіцієнт асиметрії As(x)
@@ -139,25 +139,43 @@ public class MathStatistics {
     }
 
     /*
-     * Returns standard deviation Sigma(x) of given array
-     * formula: std = sum((x_i - mean)^2)/(n-1)
+     * Returns Variance V(x) of given array
+     * formula: v = sum((x_i - mean)^2)/(n-1)
      * where n is the number of observations
      */
-    public static double calculateStandardDeviation(double[] data) {
+    public static double calculateVariance(double[] data) {
         Double sum = DoubleStream.of(data).reduce(0d, (acc, element) -> acc +
                 Math.pow(element - mean(data), 2));
-        return Math.sqrt(sum/(data.length-1));
+        return sum/(data.length -1);
     }
 
     /*
-     * Returns standard deviation Sigma(x) of given array and given mean
-     * formula: std = sum((x_i - mean)^2)/(n-1)
+     * Returns Variance V(x) of given array and given mean
+     * formula: v = sum((x_i - mean)^2)/(n-1)
      * where n is the number of observations
      */
-    public static double calculateStandardDeviation(double[] data, double mean) {
+    public static double calculateVariance(double[] data, double mean) {
         Double sum = DoubleStream.of(data).reduce(0d, (acc, element) -> acc +
                 Math.pow(element - mean, 2));
-        return Math.sqrt(sum/(data.length-1));
+        return sum/(data.length -1);
+    }
+
+    /*
+     * Returns standard deviation Sigma(x) of given array
+     * formula: std = sqrt(sum((x_i - mean)^2)/(n-1))
+     * where n is the number of observations
+     */
+    public static double calculateStandardDeviation(double[] data) {
+        return Math.sqrt(calculateVariance(data));
+    }
+
+    /*
+     * Returns standard deviation Sigma(x) of given array and variance
+     * formula: std = sqrt(sum((x_i - mean)^2)/(n-1))
+     * where n is the number of observations
+     */
+    public static double calculateStandardDeviation(double[] data, double variance) {
+        return Math.sqrt(variance);
     }
 
     /*
@@ -360,7 +378,7 @@ public class MathStatistics {
         for (int i = 0; i < x.length; i++)
             sum += (x[i] - xmean) * (y[i] - ymean);
 
-        return sum/(x.length-1);
+        return sum/x.length;
     }
 
     /*

@@ -2,6 +2,7 @@ package com.stocksanalyzer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,6 +41,20 @@ public class StocksAnalyzer {
             stats.evaluateStatistics();
             stock.setStatistics(stats);
         });
+    }
+
+    public double[][] covarianceMatrix (){
+        double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
+        for (int i=0;i<allStocks.size();i++){
+            for (int j=0; j<allStocks.size();j++){
+                if(i == j)
+                    covMatrix [i][j] = MathStatistics.calculateVariance(allStocks.get(i).getStatistics().getNormProfit())/10000;
+                else
+                    covMatrix [i][j] = MathStatistics.covariance(allStocks.get(i).getStatistics().getNormProfit(),
+                        allStocks.get(j).getStatistics().getNormProfit())/10000;
+            }
+        }
+        return covMatrix;
     }
 
     public void addStock(Stock stock) {
@@ -100,6 +115,8 @@ public class StocksAnalyzer {
             System.out.println(stock.getStatistics());
             System.out.println("--------------------");
         });
+
+        System.out.println(Arrays.deepToString(analyzer.covarianceMatrix()));
 
     }
 }
