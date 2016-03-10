@@ -1,5 +1,8 @@
 package com.stocksanalyzer;
 
+import com.jom.DoubleMatrixND;
+import com.jom.OptimizationProblem;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +31,8 @@ public class StocksAnalyzer {
     private List<Double> indexPrices = new ArrayList<>(); // фондові індекси S&P 500(чи інше), ВВОДИМО З КЛАВІАТУРИ
     private List<Double> normProfitIndexes = new ArrayList<>(); //Норми прибутку для індексу S&P 500
 
+    private List<Double> Markovitz = new ArrayList<> (); // ArrayList всіх просортованих акцій
+
     private double beta; // коефіцієнт бета, для 3 лаби потрібний (чутливість прибутковості цінного паперу до змін прибутковості ринку в цілому)
     private double ObligationUSA; //ВВОДИТЬСЯ З КЛАВІАТУРИ ставка по державних облігаціях США (можна іншу країну)
     private double marketIndex; // ВВОДИТЬСЯ З КЛАВІАУТРИ фондовий індекс S&P 500(чи інше)
@@ -55,6 +60,18 @@ public class StocksAnalyzer {
             }
         }
         return covMatrix;
+    }
+
+    public void solver(){
+        OptimizationProblem op = new OptimizationProblem();
+        op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
+        op.setInputParameter("cov", covarianceMatrix());
+        op.setObjectiveFunction("minimize", "x*cov*x'");
+        op.addConstraint(" sum(x,2) == 1");
+        op.solve("ipopt");
+        DoubleMatrixND sol = op.getPrimalSolution("x");
+        for (int i=0; i<allStocks.size();i++)
+            Markovitz.add(sol.get(i));
     }
 
     public void addStock(Stock stock) {
@@ -117,6 +134,8 @@ public class StocksAnalyzer {
         });
 
         System.out.println(Arrays.deepToString(analyzer.covarianceMatrix()));
+        analyzer.solver();
+        System.out.println(analyzer.Markovitz);
 
     }
 }
