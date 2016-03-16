@@ -5,8 +5,10 @@ import com.jom.OptimizationProblem;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
 
 /**
  * Created by BogdanRakov
@@ -17,25 +19,14 @@ public class StocksAnalyzer {
     private LocalDate startDate;
     private LocalDate endDate;
     private String frequency;
+    private MarkovitzPortfolio markovitzPortfolio = new MarkovitzPortfolio(allStocks);
+    private Map<Stock, Double> Markovitz = new HashMap<> (); // ArrayList всіх просортованих акцій
 
     public StocksAnalyzer(String startDate, String endDate, String frequency) {
         this.startDate = LocalDate.parse(startDate);
         this.endDate = LocalDate.parse(endDate);
         this.frequency = frequency;
     }
-
-
-
-    private List<Stock> sortedStocks = new ArrayList<> (); // ArrayList всіх просортованих акцій
-
-    private List<Double> indexPrices = new ArrayList<>(); // фондові індекси S&P 500(чи інше), ВВОДИМО З КЛАВІАТУРИ
-    private List<Double> normProfitIndexes = new ArrayList<>(); //Норми прибутку для індексу S&P 500
-
-    private List<Double> Markovitz = new ArrayList<> (); // ArrayList всіх просортованих акцій
-
-    private double beta; // коефіцієнт бета, для 3 лаби потрібний (чутливість прибутковості цінного паперу до змін прибутковості ринку в цілому)
-    private double ObligationUSA; //ВВОДИТЬСЯ З КЛАВІАТУРИ ставка по державних облігаціях США (можна іншу країну)
-    private double marketIndex; // ВВОДИТЬСЯ З КЛАВІАУТРИ фондовий індекс S&P 500(чи інше)
 
     /*
      * Calculates and sets allStocks normProfits and coefficients
@@ -48,53 +39,6 @@ public class StocksAnalyzer {
         });
     }
 
-    public double[][] covarianceMatrix (){
-        double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
-        for (int i=0;i<allStocks.size();i++){
-            for (int j=0; j<allStocks.size();j++){
-                if(i == j)
-                    covMatrix [i][j] = MathStatistics.calculateVariance(allStocks.get(i).getStatistics().getNormProfit())/10000;
-                else
-                    covMatrix [i][j] = MathStatistics.covariance(allStocks.get(i).getStatistics().getNormProfit(),
-                        allStocks.get(j).getStatistics().getNormProfit())/10000;
-            }
-        }
-        return covMatrix;
-    }
-
-    public void solver(){
-        Markovitz.clear();
-        OptimizationProblem op = new OptimizationProblem();
-        op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
-        op.setObjectiveFunction("minimize", "x*cov*x'");
-        op.addConstraint(" sum(x,2) == 1");
-        op.solve("ipopt");
-        DoubleMatrixND sol = op.getPrimalSolution("x");
-        for (int i=0; i<allStocks.size();i++)
-            Markovitz.add(sol.get(i));
-    }
-
-    // profit is minimum required profit
-    public void markovitzMinRisk(double profit) {
-        Markovitz.clear();
-        double[] means = new double[allStocks.size()];
-        for(int i=0; i < means.length; i++) {
-            means[i] = allStocks.get(i).getStatistics().getMean();
-        }
-        OptimizationProblem op = new OptimizationProblem();
-        op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
-        op.setInputParameter("profit", profit);
-        op.setInputParameter("mean", new DoubleMatrixND(new int[] {1, allStocks.size()}, means));
-        op.setObjectiveFunction("minimize", "x*cov*x'");
-        op.addConstraint(" sum(x,2) == 1");
-        op.addConstraint(" sum(x .* mean,2) >= profit");
-        op.solve("ipopt");
-        DoubleMatrixND sol = op.getPrimalSolution("x");
-        for (int i=0; i<allStocks.size();i++)
-            Markovitz.add(sol.get(i));
-    }
 
     public void addStock(Stock stock) {
         allStocks.add(stock);
@@ -104,62 +48,50 @@ public class StocksAnalyzer {
         return allStocks;
     }
 
-
-    public List<Double> getIndexPrices() {
-        return indexPrices;
+    public MarkovitzPortfolio getMarkovitzPortfolio() {
+        return markovitzPortfolio;
     }
 
-    public void setIndexPrices(List<Double> indexPrices) {
-        this.indexPrices = indexPrices;
-    }
-
-    public double getObligationUSA() {
-        return ObligationUSA;
-    }
-
-    public void setObligationUSA(double obligationUSA) {
-        ObligationUSA = obligationUSA;
-    }
-
-    public double getMarketIndex() {
-        return marketIndex;
-    }
-
-    public void setMarketIndex(double marketIndex) {
-        this.marketIndex = marketIndex;
+    public void createMarkovitzPortfolio(List<Stock> allStocks) {
+        this.markovitzPortfolio = new MarkovitzPortfolio(allStocks);
     }
 
 
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer("2015-11-17", "2015-12-17", "d");
 
-        double[] pricesMCD = {96.90, 97.41, 97.16, 97.00, 96.37,
-                95.13, 95.00, 96.19, 97.30, 97.54};
-        Stock mcDonalds = new Stock("McDonalds", "MCD", pricesMCD);
-        analyzer.addStock(mcDonalds);
+        //Створюємо нову акцію та додаємо її до аналізатора:
+        //Масив цін
+        double[] pricesGazprom = {139.20, 135.50, 128.77,141.70, 148.96, 132.00, 131.95, 137.90,
+                141.50, 142.86, 130.31, 143.82, 152.95};
+        //СТворюємо акцію, вводимо назву, тікер та масив цін
+        Stock gazProm = new Stock("gazProm", "GZPM", pricesGazprom);
+        //Додаємо акцію до аналізатора
+        analyzer.addStock(gazProm);
 
-        double[] pricesKO = {22.28, 22.47, 22.39, 22.42, 22.27,
-                22.43, 22.58, 22.86, 22.55, 22.56};
-        Stock coca_cola = new Stock("Coca-Cola", "KO", pricesKO);
-        analyzer.addStock(coca_cola);
+        //Теж саме, додаємо ще 2 акції
+        double[] pricesGMKNikel = {5980.00,5865.00, 6405.00, 6656.00, 6719.00, 7060.00,7230.00,
+                7320.00, 8033.00, 8820.00, 8080.00, 11610.00, 11182.00};
+        Stock gMKNikel = new Stock("GMKNorNikel", "GMKNN", pricesGMKNikel);
+        analyzer.addStock(gMKNikel);
 
-        double[] pricesPG = {37.25, 37.36, 37.32, 37.27, 37.04,
-                36.54, 36.56, 37.23, 37.53, 37.56};
-        Stock pg = new Stock("P&G", "PG", pricesPG);
-        analyzer.addStock(pg);
+        double[] pricesMechel = {39.90, 38.40, 37.50, 47.50, 52.40, 38.50,32.90, 24.60,
+                21.59, 22.60, 24.71, 44.85, 82.27};
+        Stock mechel = new Stock("Mechel", "MCHL", pricesMechel);
+        analyzer.addStock(mechel);
 
+        //Це 1 частина лаби. Для кожної акціїї Stock буде параховано коефіцієнти MathStatistics
         analyzer.calculateStocksCoefficients();
-        analyzer.allStocks.stream().forEach(stock -> {
-            System.out.println(stock.getName());
-            System.out.println(stock.getStatistics());
-            System.out.println("--------------------");
-        });
+        //Приклад діставання коефіцієнту середнього значення mean та асиметрії skewness з акції газпрому
+        System.out.println(analyzer.allStocks.get(0).getStatistics().getMean());
+        System.out.println(analyzer.allStocks.get(0).getStatistics().getSkewness());
+        //Потрібно буде для кожної акції відобразити всі коефіцієнти
+        //Напиши мені, як тобі буде ЗРУЧНІШЕ їх діставати. Я можу написати зручний метод
 
-        System.out.println(Arrays.deepToString(analyzer.covarianceMatrix()));
-        analyzer.solver();
-        System.out.println(analyzer.Markovitz);
-        analyzer.markovitzMinRisk(0.120);
-        System.out.println(analyzer.Markovitz);
-
+        //Це 2 частина. Тут ми будуємо різні види портфелів, Марковіца та Тобіна
+        //Портфель Марковіца із заданим рівнем мінімального приубутку (ми мінімізуємо ризики)
+        analyzer.createMarkovitzPortfolio(analyzer.allStocks);
+        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04);
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
     }
 }
