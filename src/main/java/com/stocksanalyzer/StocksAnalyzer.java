@@ -63,11 +63,33 @@ public class StocksAnalyzer {
     }
 
     public void solver(){
+        Markovitz.clear();
         OptimizationProblem op = new OptimizationProblem();
-        op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
+        op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
         op.setInputParameter("cov", covarianceMatrix());
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2) == 1");
+        op.solve("ipopt");
+        DoubleMatrixND sol = op.getPrimalSolution("x");
+        for (int i=0; i<allStocks.size();i++)
+            Markovitz.add(sol.get(i));
+    }
+
+    // profit is minimum required profit
+    public void markovitzMinRisk(double profit) {
+        Markovitz.clear();
+        double[] means = new double[allStocks.size()];
+        for(int i=0; i < means.length; i++) {
+            means[i] = allStocks.get(i).getStatistics().getMean();
+        }
+        OptimizationProblem op = new OptimizationProblem();
+        op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
+        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("profit", profit);
+        op.setInputParameter("mean", new DoubleMatrixND(new int[] {1, allStocks.size()}, means));
+        op.setObjectiveFunction("minimize", "x*cov*x'");
+        op.addConstraint(" sum(x,2) == 1");
+        op.addConstraint(" sum(x .* mean,2) >= profit");
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++)
@@ -135,6 +157,8 @@ public class StocksAnalyzer {
 
         System.out.println(Arrays.deepToString(analyzer.covarianceMatrix()));
         analyzer.solver();
+        System.out.println(analyzer.Markovitz);
+        analyzer.markovitzMinRisk(0.120);
         System.out.println(analyzer.Markovitz);
 
     }
