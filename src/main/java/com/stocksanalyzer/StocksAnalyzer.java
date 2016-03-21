@@ -94,7 +94,7 @@ public class StocksAnalyzer {
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
         System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
-        /* DOESNT WORK
+        /*
         //Портфель Марковіца із заданим рівнем максимального ризику 10% (ми максимызуэмо прибутки)
         analyzer.getMarkovitzPortfolio().maximizeProfit(0.1d);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));

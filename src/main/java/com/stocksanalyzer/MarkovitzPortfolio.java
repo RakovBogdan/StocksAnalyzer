@@ -9,15 +9,18 @@ import com.jom.OptimizationProblem;
  */
 public class MarkovitzPortfolio {
 
-    private Map<Stock, Double> portfolio = new HashMap<> (); //  Портфель цінних паперів марковіца
-    private double risk; // ризик портфелю
-    private double profit; // прибуток портфелю
-    private List<Stock> allStocks = new ArrayList<>(); // Окремий Arraylist акцій
+    private Map<Stock, Double> portfolio = new HashMap<> (); //  Markovitz portfolio
+    private double risk; // portfolio risk
+    private double profit; // portfolio profit
+    private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
     public MarkovitzPortfolio(List<Stock> allStocks) {
         this.allStocks = allStocks;
     }
 
+    // returns covarianceMatrix of allStocks
+    // 10000 comes from mathstatistics methods. There we count percentage of percentage witch gives us 0.01*0.01= 0.0001
+    //so we have to *10000 every result
     public double[][] covarianceMatrix (){
         double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
         for (int i=0;i<allStocks.size();i++){
@@ -49,6 +52,7 @@ public class MarkovitzPortfolio {
     // profit is minimum required profit
     public void minimizeRisk(double profit) {
         portfolio.clear();
+        this.profit = profit;
         double[] means = new double[allStocks.size()];
         for(int i=0; i < means.length; i++) {
             means[i] = allStocks.get(i).getStatistics().getMean();
@@ -66,6 +70,7 @@ public class MarkovitzPortfolio {
         for (int i=0; i<allStocks.size();i++) {
             portfolio.put(allStocks.get(i), sol.get(i));
         }
+        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0));
     }
 
     // risk is maximum risk that investor wants
@@ -80,9 +85,9 @@ public class MarkovitzPortfolio {
         op.setInputParameter("cov", covarianceMatrix());
         op.setInputParameter("risk", risk);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()},means));
-        op.setObjectiveFunction("maximize", "sum(x .* mean)");
+        op.setObjectiveFunction("maximize", "sum(x .* mean,2)");
         op.addConstraint(" sum(x,2) == 1");
-        op.addConstraint(" x*cov*x' <= risk");
+        op.addConstraint(" sqrt(x*cov*x') <= risk");
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++)
