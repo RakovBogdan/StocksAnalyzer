@@ -1,8 +1,5 @@
 package com.stocksanalyzer;
 
-import com.jom.DoubleMatrixND;
-import com.jom.OptimizationProblem;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,18 +55,19 @@ public class StocksAnalyzer {
 
 
     public static void main(String[] args) {
+        //Each HTTP session should create new StockAnalyzer
         StocksAnalyzer analyzer = new StocksAnalyzer("2015-11-17", "2015-12-17", "d");
 
-        //Створюємо нову акцію та додаємо її до аналізатора:
-        //Масив цін
+        //Creation of new stock and adding it to analyzer:
+        //Prices array
         double[] pricesGazprom = {139.20, 135.50, 128.77,141.70, 148.96, 132.00, 131.95, 137.90,
                 141.50, 142.86, 130.31, 143.82, 152.95};
-        //СТворюємо акцію, вводимо назву, тікер та масив цін
+        //Creation of new Stock, with inputs of its name, symbol and price array
         Stock gazProm = new Stock("gazProm", "GZPM", pricesGazprom);
-        //Додаємо акцію до аналізатора
+        //Add the stock to analyzer
         analyzer.addStock(gazProm);
 
-        //Теж саме, додаємо ще 2 акції
+        //Doing the same for another 2 Stocks:
         double[] pricesGMKNikel = {5980.00,5865.00, 6405.00, 6656.00, 6719.00, 7060.00,7230.00,
                 7320.00, 8033.00, 8820.00, 8080.00, 11610.00, 11182.00};
         Stock gMKNikel = new Stock("GMKNorNikel", "GMKNN", pricesGMKNikel);
@@ -80,18 +78,26 @@ public class StocksAnalyzer {
         Stock mechel = new Stock("Mechel", "MCHL", pricesMechel);
         analyzer.addStock(mechel);
 
-        //Це 1 частина лаби. Для кожної акціїї Stock буде параховано коефіцієнти MathStatistics
+        //This is the first part. Every Stock will get its MathStatistics object calculated
         analyzer.calculateStocksCoefficients();
-        //Приклад діставання коефіцієнту середнього значення mean та асиметрії skewness з акції газпрому
-        System.out.println(analyzer.allStocks.get(0).getStatistics().getMean());
-        System.out.println(analyzer.allStocks.get(0).getStatistics().getSkewness());
-        //Потрібно буде для кожної акції відобразити всі коефіцієнти
-        //Напиши мені, як тобі буде ЗРУЧНІШЕ їх діставати. Я можу написати зручний метод
+        //After calculations, u can get coefficients of mean and skewness for the first Stock like this:
+        System.out.println("mean: " + analyzer.allStocks.get(0).getStatistics().getMean());
+        System.out.println("skewness" + analyzer.allStocks.get(0).getStatistics().getSkewness());
+        System.out.println();
+        //TODO: U will need to display all coefficients from every Stock in allStocks
 
-        //Це 2 частина. Тут ми будуємо різні види портфелів, Марковіца та Тобіна
-        //Портфель Марковіца із заданим рівнем мінімального приубутку (ми мінімізуємо ризики)
+        //This is 2nd part. There are 2 kinds of portfolio: Markovitz and Tobin
+        //Markovitz portfolio with given minimum profit level of 4%, where me minimize risk level:
         analyzer.createMarkovitzPortfolio(analyzer.allStocks);
-        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04);
+        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04d);
+        //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        /* DOESNT WORK
+        //Портфель Марковіца із заданим рівнем максимального ризику 10% (ми максимызуэмо прибутки)
+        analyzer.getMarkovitzPortfolio().maximizeProfit(0.1d);
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        */
     }
 }
