@@ -117,14 +117,14 @@ public class MathStatistics {
         this.data = data;
     }
     /*
-     * Returns the array of Price Changes in percentage
-     * formula: j_i = ((x_(i+1) - x_i)/x_i) * 100
+     * Returns the array of Price Changes
+     * formula: j_i = ((x_(i+1) - x_i)/x_i)
      * j_i is the element of resulting array, x_i is the element of given array
      */
     public static double[] calculateNormProfit(double data[]) {
         double[] normProfit = new double[data.length - 1];
         for (int i=0; i<normProfit.length; i++) {
-            normProfit[i] = (data[i+1]-data[i])/data[i]*100;
+            normProfit[i] = (data[i+1]-data[i])/data[i];
         }
         return normProfit;
     }

@@ -5,16 +5,17 @@ import java.util.*;
 import com.jom.DoubleMatrixND;
 import com.jom.OptimizationProblem;
 /**
+/**
  * Created by RakovBogdan
  */
-public class MarkovitzPortfolio {
+public class TobinPortfolio {
 
     private Map<Stock, Double> portfolio = new HashMap<> (); //  Markovitz portfolio
     private double risk; // portfolio risk
     private double profit; // portfolio profit
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
-    public MarkovitzPortfolio(List<Stock> allStocks) {
+    public TobinPortfolio(List<Stock> allStocks) {
         this.allStocks = allStocks;
     }
 
@@ -48,7 +49,8 @@ public class MarkovitzPortfolio {
     }
 
     // profit is minimum required profit
-    public void minimizeRisk(double profit) {
+    //obligation year propfit comes from assets, which has no risk(it could be not obligations only, but depozits instead)
+    public void minimizeRisk(double profit, double obligationYearProfit) {
         portfolio.clear();
         this.profit = profit;
         double[] means = new double[allStocks.size()];
@@ -119,5 +121,4 @@ public class MarkovitzPortfolio {
     public void setAllStocks(List<Stock> allStocks) {
         this.allStocks = allStocks;
     }
-
 }
