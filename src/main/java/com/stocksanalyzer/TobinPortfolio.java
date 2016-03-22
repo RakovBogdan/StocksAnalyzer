@@ -15,8 +15,9 @@ public class TobinPortfolio {
     private double profit; // portfolio profit
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
-    public TobinPortfolio(List<Stock> allStocks) {
+    public TobinPortfolio(List<Stock> allStocks, double obligationYearProfit) {
         this.allStocks = allStocks;
+
     }
 
     // returns covarianceMatrix of allStocks

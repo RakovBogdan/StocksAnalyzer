@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -18,17 +19,17 @@ public class YahooDataLoader {
     private LocalDate endDate;
     private String frequency;
 
-    public YahooDataLoader() {
-
+    public YahooDataLoader(int startDay, int startMonth, int startYear,
+                           int endDay, int endMonth, int endYear, String frequency) {
+        this.startDate = LocalDate.of(startYear,startMonth,startDay);
+        this.endDate = LocalDate.of(endYear,endMonth,endDay);
+        this.frequency = frequency;
     }
-    // YYYY-MM-DD is the format!!! 2015-11-17
-    public static Stock getData(String name, String symbol, String startDate, String endDate, String period) {
 
-        LocalDate start = LocalDate.parse(startDate);
-        LocalDate end = LocalDate.parse(endDate);
+    public Stock getData(String name, String symbol) {
 
         String baseURL = "http://real-chart.finance.yahoo.com/table.csv?";
-        String queryText = BuildHistoricalDataRequest(symbol, start, end, period);
+        String queryText = BuildHistoricalDataRequest(symbol, startDate, endDate, frequency);
         String url = String.format("%s%s", baseURL, queryText);
 
         System.out.println(url);
@@ -38,7 +39,7 @@ public class YahooDataLoader {
 
         try(InputStreamReader is =
                     new InputStreamReader(new URL(url).openConnection().getInputStream());
-            BufferedReader br = new BufferedReader(is);) {
+            BufferedReader br = new BufferedReader(is)) {
 
             br.readLine(); //skip the header
 
@@ -105,14 +106,15 @@ public class YahooDataLoader {
     */
 
     public static void main(String[] args) {
-        Stock yahoo = YahooDataLoader.getData("yahoo", "YHOO", "2015-11-17", "2016-01-17", "d");
-        System.out.println(yahoo.getPrices());
-        Stock google = YahooDataLoader.getData("google", "GOOG", "2015-11-17", "2016-01-17", "d");
-        System.out.println(google.getPrices());
-        Stock pg = YahooDataLoader.getData("PG", "PG", "2015-11-17", "2016-01-17", "d");
-        System.out.println(pg.getPrices());
-        Stock sp500 = YahooDataLoader.getData("s&p500", "^GSPC", "2015-11-17", "2016-01-17", "d");
-        System.out.println(sp500.getPrices());
+        YahooDataLoader dataLoader = new YahooDataLoader(17,11,2015,17,1,2016, "d");
+        Stock yahoo = dataLoader.getData("yahoo", "YHOO");
+        System.out.println(Arrays.toString(yahoo.getPrices()));
+        Stock google = dataLoader.getData("google", "GOOG");
+        System.out.println(Arrays.toString(google.getPrices()));
+        Stock pg = dataLoader.getData("PG", "PG");
+        System.out.println(Arrays.toString(pg.getPrices()));
+        Stock sp500 = dataLoader.getData("s&p500", "^GSPC");
+        System.out.println(Arrays.toString(sp500.getPrices()));
         /*
         for(String s : getStockSymbol("procter")) {
             System.out.println(s);

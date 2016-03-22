@@ -1,10 +1,8 @@
 package com.stocksanalyzer;
 
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Arrays;
 
 /**
@@ -13,16 +11,14 @@ import java.util.Arrays;
 public class StocksAnalyzer {
 
     private List<Stock> allStocks = new ArrayList<>();
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String frequency;
-    private MarkovitzPortfolio markovitzPortfolio = new MarkovitzPortfolio(allStocks);
-    private Map<Stock, Double> Markovitz = new HashMap<> (); // ArrayList всіх просортованих акцій
 
-    public StocksAnalyzer(String startDate, String endDate, String frequency) {
-        this.startDate = LocalDate.parse(startDate);
-        this.endDate = LocalDate.parse(endDate);
-        this.frequency = frequency;
+    private MarkovitzPortfolio markovitzPortfolio;
+    private TobinPortfolio tobinPortfolio = new TobinPortfolio(allStocks,12);
+
+    private YahooDataLoader yahooDataLoader;
+
+    public void loadStock(String name, String symbol) {
+        allStocks.add(yahooDataLoader.getData("yahoo", "YHOO"));
     }
 
     /*
@@ -36,6 +32,16 @@ public class StocksAnalyzer {
         });
     }
 
+
+    public YahooDataLoader getYahooDataLoader() {
+        return yahooDataLoader;
+    }
+
+    public void setYahooDataLoader(int startDay, int startMonth, int startYear,
+                              int endDay, int endMonth, int endYear, String frequency) {
+        this.yahooDataLoader = new YahooDataLoader(startDay, startMonth, startYear,
+                                endDay, endMonth, endYear, frequency);
+    }
 
     public void addStock(Stock stock) {
         allStocks.add(stock);
@@ -53,10 +59,22 @@ public class StocksAnalyzer {
         this.markovitzPortfolio = new MarkovitzPortfolio(allStocks);
     }
 
+    public TobinPortfolio getTobinPortfolio() {
+        return tobinPortfolio;
+    }
+
+    public void createTobinPortfolio(List<Stock> allStocks, double obligationYearProfit) {
+        this.tobinPortfolio = new TobinPortfolio(allStocks, obligationYearProfit);
+    }
+
 
     public static void main(String[] args) {
         //Each HTTP session should create new StockAnalyzer
-        StocksAnalyzer analyzer = new StocksAnalyzer("2015-11-17", "2015-12-17", "d");
+        StocksAnalyzer analyzer = new StocksAnalyzer();
+
+        //Loading data with using of YahooDataLoader
+        analyzer.setYahooDataLoader(17,11,2015,17,1,2016, "d");
+        analyzer.loadStock("yahoo", "YHOO");
 
         //Creation of new stock and adding it to analyzer:
         //Prices array
@@ -99,5 +117,7 @@ public class StocksAnalyzer {
         analyzer.getMarkovitzPortfolio().maximizeProfit(0.1d);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         */
+
+        //Markovitz portfolio with given minimum profit level of 4%, where me minimize risk level:
     }
 }
