@@ -32,8 +32,6 @@ public class YahooDataLoader {
         String queryText = BuildHistoricalDataRequest(symbol, startDate, endDate, frequency);
         String url = String.format("%s%s", baseURL, queryText);
 
-        System.out.println(url);
-
         String csvLine;
         ArrayList<Double> pricesList = new ArrayList<>();
 
@@ -47,8 +45,6 @@ public class YahooDataLoader {
                 String[] stockInfo = csvLine.split(",");
                 pricesList.add(Double.parseDouble(stockInfo[4]));
             }
-
-            System.out.println(pricesList.size());
 
         } catch(IOException ex) {
             System.out.println(ex);
@@ -105,20 +101,4 @@ public class YahooDataLoader {
     }
     */
 
-    public static void main(String[] args) {
-        YahooDataLoader dataLoader = new YahooDataLoader(17,11,2015,17,1,2016, "d");
-        Stock yahoo = dataLoader.getData("yahoo", "YHOO");
-        System.out.println(Arrays.toString(yahoo.getPrices()));
-        Stock google = dataLoader.getData("google", "GOOG");
-        System.out.println(Arrays.toString(google.getPrices()));
-        Stock pg = dataLoader.getData("PG", "PG");
-        System.out.println(Arrays.toString(pg.getPrices()));
-        Stock sp500 = dataLoader.getData("s&p500", "^GSPC");
-        System.out.println(Arrays.toString(sp500.getPrices()));
-        /*
-        for(String s : getStockSymbol("procter")) {
-            System.out.println(s);
-        }
-        */
-    }
 }

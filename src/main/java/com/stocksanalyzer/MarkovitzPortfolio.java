@@ -15,7 +15,13 @@ public class MarkovitzPortfolio {
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
     public MarkovitzPortfolio(List<Stock> allStocks) {
-        this.allStocks = allStocks;
+        for(Stock stock: allStocks){
+            if(stock.getStatistics().getMean() >= 0 )
+                this.allStocks.add(stock);
+            else
+                System.out.println("Stock " + stock.getName() +
+                    "was removed due to its mean being < 0");
+        }
     }
 
     // returns covarianceMatrix of allStocks
@@ -24,10 +30,12 @@ public class MarkovitzPortfolio {
         for (int i=0;i<allStocks.size();i++){
             for (int j=0; j<allStocks.size();j++){
                 if(i == j)
-                    covMatrix [i][j] = MathStatistics.calculateVariance(allStocks.get(i).getStatistics().getNormProfit());
+                    covMatrix [i][j] = MathStatistics.calculateVariance(
+                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
                 else
-                    covMatrix [i][j] = MathStatistics.covariance(allStocks.get(i).getStatistics().getNormProfit(),
-                            allStocks.get(j).getStatistics().getNormProfit());
+                    covMatrix [i][j] = MathStatistics.covariance(
+                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()),
+                            MathStatistics.calculateNormProfit(allStocks.get(j).getPrices()));
             }
         }
         System.out.println(Arrays.deepToString(covMatrix));
