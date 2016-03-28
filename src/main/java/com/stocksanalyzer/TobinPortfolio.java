@@ -10,7 +10,7 @@ import com.jom.OptimizationProblem;
  */
 public class TobinPortfolio {
 
-    private Map<Stock, Double> portfolio = new HashMap<> (); //  Markovitz portfolio
+    private Map<Stock, Double> portfolio = new LinkedHashMap<> (); //  Markovitz portfolio
     private double risk; // portfolio risk
     private double profit; // portfolio profit
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
@@ -32,11 +32,10 @@ public class TobinPortfolio {
                             allStocks.get(j).getStatistics().getNormProfit());
             }
         }
-        System.out.println(Arrays.deepToString(covMatrix));
         return covMatrix;
     }
 
-    public void solver(){
+    public void maximumProfit(){
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);

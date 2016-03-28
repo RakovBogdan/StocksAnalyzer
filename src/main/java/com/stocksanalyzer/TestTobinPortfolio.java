@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Created by RakovBogdan.
  */
-public class TobinPortfolioTest {
+public class TestTobinPortfolio {
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer();
         //Creation of new stock and adding it to analyzer:
@@ -30,7 +30,7 @@ public class TobinPortfolioTest {
 
         analyzer.calculateStocksCoefficients(true);
 
-        analyzer.createMarkovitzPortfolio(analyzer.getStocks());
+        analyzer.createMarkovitzPortfolio();
         analyzer.getMarkovitzPortfolio().minimizeRisk(0.04d);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));

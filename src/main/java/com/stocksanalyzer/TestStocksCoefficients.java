@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * Created by Патука on 24.03.2016.
  */
-public class StocksCoefficientsTest {
+public class TestStocksCoefficients {
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer();
 

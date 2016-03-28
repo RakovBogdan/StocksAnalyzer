@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Created by RakovBogdan.
  * Here I test Marovitz Portfoiio
  */
-public class MarkovitzPortfolioTest {
+public class TestMarkovitzPortfolio {
     public static void main(String[] args) {
 
         StocksAnalyzer analyzer = new StocksAnalyzer();
@@ -32,7 +32,7 @@ public class MarkovitzPortfolioTest {
 
         analyzer.calculateStocksCoefficients(true);
 
-        analyzer.createMarkovitzPortfolio(analyzer.getStocks());
+        analyzer.createMarkovitzPortfolio();
 
         for(Stock stock : analyzer.getStocks()) {
             System.out.println(stock

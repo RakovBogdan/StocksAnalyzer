@@ -54,7 +54,7 @@ public class StocksAnalyzer {
         return markovitzPortfolio;
     }
 
-    public void createMarkovitzPortfolio(List<Stock> allStocks) {
+    public void createMarkovitzPortfolio() {
         this.markovitzPortfolio = new MarkovitzPortfolio(allStocks);
     }
 
@@ -80,8 +80,12 @@ public class StocksAnalyzer {
         //adding stock to allStocks, symbol YHOO is very important
         //TODO: when client types in first letter "Y", 10 results must be shown(like here http://finance.yahoo.com/lookup),
 
-        analyzer.loadStock("General electric", "GE");
+        analyzer.loadStock("Yahoo", "YHOO");
         analyzer.loadStock("Facebook", "FB");
+        analyzer.loadStock("Google", "GOOG");
+        analyzer.loadStock("Procter&Gamble", "PG");
+        analyzer.loadStock("Coca-Cola", "KO");
+        analyzer.loadStock("Ford", "F");
 
         //This is the first part. Every Stock will get its MathStatistics object calculated
         //U have to choose percentage or non percentage mode
@@ -95,19 +99,28 @@ public class StocksAnalyzer {
         //TODO: U will need to display all coefficients from every Stock in allStocks
 
         //This is 2nd part. There are 2 kinds of portfolio: Markovitz and Tobin
-        //Markovitz portfolio with given minimum profit level of 4%, where me minimize risk level:
-        analyzer.createMarkovitzPortfolio(analyzer.getStocks());
-        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04d);
+        analyzer.createMarkovitzPortfolio();
+        //Markovitz portfolio with maximum profit
+        analyzer.getMarkovitzPortfolio().maximumProfit();
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+
+        //Markovitz portfolio with given profit level of 0,01%, where me minimize risk level:
+        analyzer.getMarkovitzPortfolio().minimizeRisk(0.0001d);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
         System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
-        /*
-        //Портфель Марковіца із заданим рівнем максимального ризику 10% (ми максимызуэмо прибутки)
-        analyzer.getMarkovitzPortfolio().maximizeProfit(0.1d);
+
+        /* Just doesnt work
+        //Markovitz portfolio with given risk level 0,5%, where we maximize profit
+        analyzer.getMarkovitzPortfolio().maximizeProfit(0.005d);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
         */
 
-        //Markovitz portfolio with given minimum profit level of 4%, where me minimize risk level:
+
     }
 }
