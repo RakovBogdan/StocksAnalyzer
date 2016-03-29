@@ -31,5 +31,11 @@ public class TestStocksCoefficients {
             System.out.println("--------------------");
         });
 
+        analyzer.createMarkovitzPortfolio();
+        analyzer.getMarkovitzPortfolio().maximumProfit();
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+
     }
 }

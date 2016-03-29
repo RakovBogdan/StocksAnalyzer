@@ -235,7 +235,7 @@ public class MathStatistics {
 
     /*
      * Returns covariance between two given arrays
-     * formula: cov = sum((x_i-mean(x))*(y_i-mean(y)))/(n-1)
+     * formula: cov = sum((x_i-mean(x))*(y_i-mean(y)))/(n)
      * where n is number of observations
      */
     public static double covariance(double[] x, double[] y) {

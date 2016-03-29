@@ -13,7 +13,7 @@ public class StocksAnalyzer {
     private List<Stock> allStocks = new ArrayList<>();
 
     private MarkovitzPortfolio markovitzPortfolio;
-    private TobinPortfolio tobinPortfolio = new TobinPortfolio(allStocks,12);
+    private TobinPortfolio tobinPortfolio;
 
     private YahooDataLoader yahooDataLoader;
 
@@ -42,6 +42,20 @@ public class StocksAnalyzer {
                                 endDay, endMonth, endYear, frequency);
     }
 
+    public void setNonRiskSecurity(double nonRiskSecurityYearProfit) {
+        switch (this.yahooDataLoader.getFrequency()) {
+            case "d" :
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/365);
+                break;
+            case "m" :
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/12);
+                break;
+            case "y" :
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit);
+                break;
+        }
+    }
+
     public void addStock(Stock stock) {
         allStocks.add(stock);
     }
@@ -62,8 +76,8 @@ public class StocksAnalyzer {
         return tobinPortfolio;
     }
 
-    public void createTobinPortfolio(List<Stock> allStocks, double obligationYearProfit) {
-        this.tobinPortfolio = new TobinPortfolio(allStocks, obligationYearProfit);
+    public void createTobinPortfolio() {
+        this.tobinPortfolio = new TobinPortfolio(allStocks);
     }
 
 

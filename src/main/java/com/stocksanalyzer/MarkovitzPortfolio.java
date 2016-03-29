@@ -38,6 +38,7 @@ public class MarkovitzPortfolio {
                             MathStatistics.calculateNormProfit(allStocks.get(j).getPrices()));
             }
         }
+        System.out.println(Arrays.deepToString(covMatrix));
         return covMatrix;
     }
 

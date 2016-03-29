@@ -13,11 +13,11 @@ public class TobinPortfolio {
     private Map<Stock, Double> portfolio = new LinkedHashMap<> (); //  Markovitz portfolio
     private double risk; // portfolio risk
     private double profit; // portfolio profit
+    private Stock nonRiskProfitSecurity; // non-Risk security
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
-    public TobinPortfolio(List<Stock> allStocks, double obligationYearProfit) {
+    public TobinPortfolio(List<Stock> allStocks) {
         this.allStocks = allStocks;
-
     }
 
     // returns covarianceMatrix of allStocks
@@ -39,13 +39,22 @@ public class TobinPortfolio {
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
+        op.addDecisionVariable("nonRisk", false, new int[] {1,1});
         op.setInputParameter("cov", covarianceMatrix());
         op.setObjectiveFunction("minimize", "x*cov*x'");
-        op.addConstraint(" sum(x,2) == 1");
+        op.addConstraint(" sum(x,2) + nonRisk == 1");
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
-        for (int i=0; i<allStocks.size();i++)
+
+        double profit = 0.0d;
+        for (int i=0; i<allStocks.size();i++) {
             portfolio.put(allStocks.get(i), sol.get(i));
+            profit += sol.get(i)*allStocks.get(i).getStatistics().getMean();
+        }
+        profit += nonRiskProfitSecurity.getPrices()[0] * sol.get(allStocks.size());
+        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0));
+        this.profit = profit;
+
     }
 
     // profit is minimum required profit
@@ -84,7 +93,7 @@ public class TobinPortfolio {
         op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
         op.setInputParameter("cov", covarianceMatrix());
         op.setInputParameter("risk", risk);
-        op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()},means));
+        op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("maximize", "sum(x .* mean,2)");
         op.addConstraint(" sum(x,2) == 1");
         op.addConstraint(" sqrt(x*cov*x') <= risk");
@@ -92,6 +101,8 @@ public class TobinPortfolio {
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++)
             portfolio.put(allStocks.get(i), sol.get(i));
+        portfolio.put(nonRiskProfitSecurity, sol.get(allStocks.size()));
+
     }
 
     public Map<Stock, Double> getPortfolio() {
@@ -120,5 +131,16 @@ public class TobinPortfolio {
 
     public void setAllStocks(List<Stock> allStocks) {
         this.allStocks = allStocks;
+    }
+
+    public Stock getNonRiskProfit() {
+        return nonRiskProfitSecurity;
+    }
+
+    public void setNonRiskProfit(double nonRiskProfit) {
+        double[] pricesSizeNormalized = new double[allStocks.get(0).getPrices().length];
+        Arrays.fill(pricesSizeNormalized, nonRiskProfit);
+        this.nonRiskProfitSecurity = new Stock("nonRiskSecurity", "NORISK", pricesSizeNormalized);
+
     }
 }

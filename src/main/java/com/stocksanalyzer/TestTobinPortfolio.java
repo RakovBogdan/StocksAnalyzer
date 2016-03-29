@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class TestTobinPortfolio {
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer();
+        analyzer.setYahooDataLoader(17, 11, 2015, 17, 1, 2016, "m");
         //Creation of new stock and adding it to analyzer:
         //Prices array
         double[] pricesGazprom = {139.20, 135.50, 128.77,141.70, 148.96, 132.00, 131.95, 137.90,
@@ -23,18 +24,20 @@ public class TestTobinPortfolio {
         Stock gMKNikel = new Stock("GMKNorNikel", "GMKNN", pricesGMKNikel);
         analyzer.addStock(gMKNikel);
 
-        double[] pricesMechel = {39.90, 38.40, 37.50, 47.50, 52.40, 38.50,32.90, 24.60,
-                21.59, 22.60, 24.71, 44.85, 82.27};
-        Stock mechel = new Stock("Mechel", "MCHL", pricesMechel);
-        analyzer.addStock(mechel);
+        double[] pricesMMK = {6.244, 5.621, 5.823, 6.703, 6.693, 6.78, 7.347, 7.802,
+                9,417, 12.481, 10.821, 13.134, 14.6};
+        Stock mmk = new Stock("MMK", "MMK", pricesMMK);
+        analyzer.addStock(mmk);
 
         analyzer.calculateStocksCoefficients(true);
 
-        analyzer.createMarkovitzPortfolio();
-        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04d);
+        analyzer.createTobinPortfolio();
+        analyzer.setNonRiskSecurity(0.1317);
+        analyzer.getTobinPortfolio().maximumProfit();
+
         //TODO: U will need to display portfolio, also its risk and profit rates
-        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        System.out.println(Arrays.asList(analyzer.getTobinPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getTobinPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getTobinPortfolio().getProfit());
     }
 }
