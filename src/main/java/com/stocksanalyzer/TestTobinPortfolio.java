@@ -25,7 +25,7 @@ public class TestTobinPortfolio {
         analyzer.addStock(gMKNikel);
 
         double[] pricesMMK = {6.244, 5.621, 5.823, 6.703, 6.693, 6.78, 7.347, 7.802,
-                9,417, 12.481, 10.821, 13.134, 14.6};
+                9.417, 12.481, 10.821, 13.134, 14.6};
         Stock mmk = new Stock("MMK", "MMK", pricesMMK);
         analyzer.addStock(mmk);
 

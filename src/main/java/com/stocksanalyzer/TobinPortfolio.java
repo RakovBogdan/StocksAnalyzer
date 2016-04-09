@@ -22,6 +22,10 @@ public class TobinPortfolio {
 
     // returns covarianceMatrix of allStocks
     public double[][] covarianceMatrix (){
+        System.out.println(allStocks.size());
+        for(Stock s : allStocks) {
+            System.out.println(s.getName() + s.getPrices().length);
+        }
         double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
         for (int i=0;i<allStocks.size();i++){
             for (int j=0; j<allStocks.size();j++){
@@ -39,10 +43,9 @@ public class TobinPortfolio {
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.addDecisionVariable("nonRisk", false, new int[] {1,1});
         op.setInputParameter("cov", covarianceMatrix());
         op.setObjectiveFunction("minimize", "x*cov*x'");
-        op.addConstraint(" sum(x,2) + nonRisk == 1");
+        op.addConstraint(" sum(x,2)== 1");
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
 
@@ -51,7 +54,7 @@ public class TobinPortfolio {
             portfolio.put(allStocks.get(i), sol.get(i));
             profit += sol.get(i)*allStocks.get(i).getStatistics().getMean();
         }
-        profit += nonRiskProfitSecurity.getPrices()[0] * sol.get(allStocks.size());
+
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0));
         this.profit = profit;
 
@@ -141,6 +144,11 @@ public class TobinPortfolio {
         double[] pricesSizeNormalized = new double[allStocks.get(0).getPrices().length];
         Arrays.fill(pricesSizeNormalized, nonRiskProfit);
         this.nonRiskProfitSecurity = new Stock("nonRiskSecurity", "NORISK", pricesSizeNormalized);
+        MathStatistics stats = new MathStatistics(nonRiskProfitSecurity.getPrices(), true);
+        stats.evaluateStatistics();
+        nonRiskProfitSecurity.setStatistics(stats);
+        System.out.println(nonRiskProfitSecurity.getPrices().length);
+        allStocks.add(nonRiskProfitSecurity);
 
     }
 }
