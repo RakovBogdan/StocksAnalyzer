@@ -256,12 +256,10 @@ public class MathStatistics {
         for (int i=0;i<allStocks.size();i++){
             for (int j=0; j<allStocks.size();j++){
                 if(i == j)
-                    covMatrix [i][j] = MathStatistics.calculateVariance(
-                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
+                    covMatrix [i][j] = calculateVariance(calculateNormProfit(allStocks.get(i).getPrices()));
                 else
-                    covMatrix [i][j] = MathStatistics.covariance(
-                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()),
-                            MathStatistics.calculateNormProfit(allStocks.get(j).getPrices()));
+                    covMatrix [i][j] = covariance(calculateNormProfit(allStocks.get(i).getPrices()),
+                                                    calculateNormProfit(allStocks.get(j).getPrices()));
             }
         }
         System.out.println(Arrays.deepToString(covMatrix));

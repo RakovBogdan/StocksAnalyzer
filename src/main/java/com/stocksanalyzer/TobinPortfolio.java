@@ -20,27 +20,11 @@ public class TobinPortfolio {
         this.allStocks = allStocks;
     }
 
-    // returns covarianceMatrix of allStocks
-    public double[][] covarianceMatrix (){
-        double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
-        for (int i=0;i<allStocks.size();i++){
-            for (int j=0; j<allStocks.size();j++){
-                if(i == j)
-                    covMatrix [i][j] = MathStatistics.calculateVariance(allStocks.get(i).getStatistics().getNormProfit());
-                else
-                    covMatrix [i][j] = MathStatistics.covariance(allStocks.get(i).getStatistics().getNormProfit(),
-                            allStocks.get(j).getStatistics().getNormProfit());
-            }
-        }
-        System.out.println(Arrays.deepToString(covMatrix));
-        return covMatrix;
-    }
-
     public void maximumProfit(){
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2)== 1");
         op.solve("ipopt");
@@ -68,7 +52,7 @@ public class TobinPortfolio {
         }
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setInputParameter("profit", profit);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("minimize", "x*cov*x'");
@@ -91,7 +75,7 @@ public class TobinPortfolio {
         }
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[] {1, allStocks.size()} , 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setInputParameter("risk", risk);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("maximize", "sum(x .* mean,2)");
