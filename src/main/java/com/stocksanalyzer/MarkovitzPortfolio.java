@@ -25,7 +25,7 @@ public class MarkovitzPortfolio {
     }
 
     //returns maximum profit possible
-    public void maximumProfit(){
+    public void minimumRisk(){
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
@@ -45,10 +45,31 @@ public class MarkovitzPortfolio {
 
     }
 
-    // profit is minimum required profit
-    public void minimizeRisk(double profit) {
+    //returns maximum profit possible
+    public void maximumProfit(){
         portfolio.clear();
+        OptimizationProblem op = new OptimizationProblem();
+        op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
+        op.setObjectiveFunction("maximize", "x*cov*x'");
+        op.addConstraint(" sum(x,2) == 1");
+        op.solve("ipopt");
+        DoubleMatrixND sol = op.getPrimalSolution("x");
+
+        double profit = 0.0d;
+        for (int i=0; i<allStocks.size();i++) {
+            portfolio.put(allStocks.get(i), sol.get(i));
+            profit += sol.get(i)* MathStatistics.mean(allStocks.get(i).getStatistics().getNormProfit());
+        }
+        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
         this.profit = profit;
+    }
+
+    // profit is minimum required profit
+    // Profit in Percentage! so if u want minimum 10% of profit, u just pass 10
+    public void minimizeRisk(double profitPercantage) {
+        portfolio.clear();
+        this.profit = profitPercantage;
         double[] means = new double[allStocks.size()];
         for(int i=0; i < means.length; i++) {
             means[i] = allStocks.get(i).getStatistics().getMean();
@@ -56,18 +77,18 @@ public class MarkovitzPortfolio {
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
         op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
-        op.setInputParameter("profit", profit);
+        op.setInputParameter("profit", profitPercantage/100);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2) == 1");
-        op.addConstraint(" sum(x .* mean,2) == profit", "portfolioProfit");
+        op.addConstraint(" sum(x .* mean,2) >= profit", "portfolioProfit");
         op.solve("ipopt");
 
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++) {
             portfolio.put(allStocks.get(i), sol.get(i));
         }
-        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0));
+        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
     }
 
     // new int[] {rows, columns}

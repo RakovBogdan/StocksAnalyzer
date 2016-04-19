@@ -259,7 +259,7 @@ public class MathStatistics {
                     covMatrix [i][j] = calculateVariance(calculateNormProfit(allStocks.get(i).getPrices()));
                 else
                     covMatrix [i][j] = covariance(calculateNormProfit(allStocks.get(i).getPrices()),
-                                                    calculateNormProfit(allStocks.get(j).getPrices()));
+                            calculateNormProfit(allStocks.get(j).getPrices()));
             }
         }
         System.out.println(Arrays.deepToString(covMatrix));
@@ -284,16 +284,16 @@ public class MathStatistics {
 
 
     public String toString() {
-        return "Normalized profit, or price change:" + Arrays.toString(this.normProfit) + "\n" +
-        "Excpected value, mean, M(x):" + this.mean + "\n" +
-        "Standard Deviation Sigma(x):" + this.standardDeviation + "\n" +
-        "Coefficient of variation CV(x):" + this.varianceCoefficient + "\n" +
-        "Skewness As(x):" + this.skewness + "\n" +
-        "Kurtosis Es(x):" + this.kurtosis + "\n" +
-        "Normalized Skewnewss IAS(x):" + this.normSkewness + "\n" +
-        "Normalized Kurtosis IEs(x):" + this.normKurtosis + "\n" +
-        "Standard SemiVariance SSV(x):" + this.standardSemiVariance + "\n" +
-        "SemiVariation Coefficient CSV(x):" + this.semiVarianceCoefficient;
+        return "Normalized profit, or price change:" + Arrays.toString(this.normProfit) + "%\n" +
+        "Excpected value, mean, M(x):" + this.mean + "%\n" +
+        "Standard Deviation Sigma(x):" + this.standardDeviation + "%\n" +
+        "Coefficient of variation CV(x):" + this.varianceCoefficient + "%\n" +
+        "Skewness As(x):" + this.skewness + "%\n" +
+        "Kurtosis Es(x):" + this.kurtosis + "%\n" +
+        "Normalized Skewnewss IAS(x):" + this.normSkewness + "%\n" +
+        "Normalized Kurtosis IEs(x):" + this.normKurtosis + "%\n" +
+        "Standard SemiVariance SSV(x):" + this.standardSemiVariance + "%\n" +
+        "SemiVariation Coefficient CSV(x):" + this.semiVarianceCoefficient + "%";
     }
 
 

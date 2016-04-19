@@ -41,7 +41,7 @@ public class TestMarkovitzPortfolio {
                     + " variance: " + stock.getStatistics().getStandardDeviation());
         }
 
-        analyzer.getMarkovitzPortfolio().maximumProfit();
+        analyzer.getMarkovitzPortfolio().minimumRisk();
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());

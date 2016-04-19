@@ -32,10 +32,15 @@ public class TestStocksCoefficients {
         });
 
         analyzer.createMarkovitzPortfolio();
-        analyzer.getMarkovitzPortfolio().maximumProfit();
+        analyzer.getMarkovitzPortfolio().minimumRisk();
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
+
+        analyzer.getMarkovitzPortfolio().minimizeRisk(0.10872402777284658);
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
 
     }
 }
