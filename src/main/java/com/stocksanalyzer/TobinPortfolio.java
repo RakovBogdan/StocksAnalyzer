@@ -22,10 +22,6 @@ public class TobinPortfolio {
 
     // returns covarianceMatrix of allStocks
     public double[][] covarianceMatrix (){
-        System.out.println(allStocks.size());
-        for(Stock s : allStocks) {
-            System.out.println(s.getName() + s.getPrices().length);
-        }
         double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
         for (int i=0;i<allStocks.size();i++){
             for (int j=0; j<allStocks.size();j++){
@@ -36,6 +32,7 @@ public class TobinPortfolio {
                             allStocks.get(j).getStatistics().getNormProfit());
             }
         }
+        System.out.println(Arrays.deepToString(covMatrix));
         return covMatrix;
     }
 
@@ -144,10 +141,15 @@ public class TobinPortfolio {
         double[] pricesSizeNormalized = new double[allStocks.get(0).getPrices().length];
         Arrays.fill(pricesSizeNormalized, nonRiskProfit);
         this.nonRiskProfitSecurity = new Stock("nonRiskSecurity", "NORISK", pricesSizeNormalized);
+
+        double[] profitSizeNormalized = new double[allStocks.get(0).getPrices().length-1];
+        Arrays.fill(pricesSizeNormalized, nonRiskProfit);
+
         MathStatistics stats = new MathStatistics(nonRiskProfitSecurity.getPrices(), true);
-        stats.evaluateStatistics();
+        stats.setNormProfit(profitSizeNormalized);
+        stats.setMean(pricesSizeNormalized[0]);
         nonRiskProfitSecurity.setStatistics(stats);
-        System.out.println(nonRiskProfitSecurity.getPrices().length);
+        System.out.println(nonRiskProfitSecurity.getStatistics());
         allStocks.add(nonRiskProfitSecurity);
 
     }

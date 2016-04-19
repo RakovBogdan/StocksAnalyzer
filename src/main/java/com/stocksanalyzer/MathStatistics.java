@@ -1,6 +1,8 @@
 package com.stocksanalyzer;
 
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.DoubleStream;
 
 /**
@@ -246,6 +248,24 @@ public class MathStatistics {
             sum += (x[i] - xmean) * (y[i] - ymean);
 
         return sum/x.length;
+    }
+
+    // returns covarianceMatrix of allStocks
+    public static double[][] stocksCovarianceMatrix (List<Stock> allStocks){
+        double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
+        for (int i=0;i<allStocks.size();i++){
+            for (int j=0; j<allStocks.size();j++){
+                if(i == j)
+                    covMatrix [i][j] = MathStatistics.calculateVariance(
+                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
+                else
+                    covMatrix [i][j] = MathStatistics.covariance(
+                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()),
+                            MathStatistics.calculateNormProfit(allStocks.get(j).getPrices()));
+            }
+        }
+        System.out.println(Arrays.deepToString(covMatrix));
+        return covMatrix;
     }
 
     /*

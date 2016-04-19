@@ -41,7 +41,19 @@ public class TestMarkovitzPortfolio {
                     + " variance: " + stock.getStatistics().getStandardDeviation());
         }
 
-        analyzer.getMarkovitzPortfolio().minimizeRisk(0.04d);
+        analyzer.getMarkovitzPortfolio().maximumProfit();
+        //TODO: U will need to display portfolio, also its risk and profit rates
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+
+        analyzer.getMarkovitzPortfolio().minimizeRisk(2d);
+        //TODO: U will need to display portfolio, also its risk and profit rates
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+
+        analyzer.getMarkovitzPortfolio().maximizeProfit(0.05d);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());

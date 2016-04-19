@@ -24,30 +24,12 @@ public class MarkovitzPortfolio {
         }
     }
 
-    // returns covarianceMatrix of allStocks
-    public double[][] covarianceMatrix (){
-        double [][] covMatrix = new double[allStocks.size()][allStocks.size()];
-        for (int i=0;i<allStocks.size();i++){
-            for (int j=0; j<allStocks.size();j++){
-                if(i == j)
-                    covMatrix [i][j] = MathStatistics.calculateVariance(
-                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
-                else
-                    covMatrix [i][j] = MathStatistics.covariance(
-                            MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()),
-                            MathStatistics.calculateNormProfit(allStocks.get(j).getPrices()));
-            }
-        }
-        System.out.println(Arrays.deepToString(covMatrix));
-        return covMatrix;
-    }
-
     //returns maximum profit possible
     public void maximumProfit(){
         portfolio.clear();
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2) == 1");
         op.solve("ipopt");
@@ -56,9 +38,9 @@ public class MarkovitzPortfolio {
         double profit = 0.0d;
         for (int i=0; i<allStocks.size();i++) {
             portfolio.put(allStocks.get(i), sol.get(i));
-            profit += sol.get(i)*allStocks.get(i).getStatistics().getMean();
+            profit += sol.get(i)* MathStatistics.mean(allStocks.get(i).getStatistics().getNormProfit());
         }
-        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0));
+        this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
         this.profit = profit;
 
     }
@@ -73,7 +55,7 @@ public class MarkovitzPortfolio {
         }
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setInputParameter("profit", profit);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("minimize", "x*cov*x'");
@@ -89,7 +71,7 @@ public class MarkovitzPortfolio {
     }
 
     // new int[] {rows, columns}
-    // risk is maximum risk that investor wants
+    // risk is maximum risk that investor accept
     // doesnt work ;(
     public void maximizeProfit(double risk) {
         portfolio.clear();
@@ -100,10 +82,10 @@ public class MarkovitzPortfolio {
         }
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
-        op.setInputParameter("cov", covarianceMatrix());
+        op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
         op.setInputParameter("risk", risk);
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
-        op.setObjectiveFunction("minimize", "sum(x .* mean,2)");
+        op.setObjectiveFunction("maximize", "sum(x .* mean,2)");
         op.addConstraint(" sum(x,2) == 1");
         op.addConstraint(" sqrt(x*cov*x') == risk", "portfolioRisk");
         op.solve("ipopt");
