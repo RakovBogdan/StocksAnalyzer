@@ -89,42 +89,48 @@ public class StocksAnalyzer {
         //two dates in integer format: day,month,year
         // last string is data frequency: "d" -daily, "m" - monthly, "y" - yearly
         //TODO: make Set Data range like here http://finance.yahoo.com/q/hp?s=GE
-        analyzer.setYahooDataLoader(17, 11, 2010, 17, 1, 2016, "m");
+        analyzer.setYahooDataLoader(17, 11, 2010, 17, 1, 2016, "d");
 
         //adding stock to allStocks, symbol YHOO is very important
         //TODO: when client types in first letter "Y", 10 results must be shown(like here http://finance.yahoo.com/lookup),
 
-        analyzer.loadStock("Yahoo", "YHOO");
-        analyzer.loadStock("Google", "GOOG");
-        analyzer.loadStock("Procter&Gamble", "PG");
+
         analyzer.loadStock("Coca-Cola", "KO");
         analyzer.loadStock("Ford", "F");
+        analyzer.loadStock("Chevron", "CVX");
 
         //This is the first part. Every Stock will get its MathStatistics object calculated
         //U have to choose percentage or non percentage mode
         analyzer.calculateStocksCoefficients(false);
         //After calculations, u can get coefficients of mean and skewness for the first Stock like this:
-        System.out.println(analyzer.getStocks().get(0)
-                + " mean: " + analyzer.getStocks().get(0).getStatistics().getMean() + "%");
-        System.out.println(analyzer.getStocks().get(0)
-                + " skewness: " + analyzer.getStocks().get(0).getStatistics().getSkewness() + "%");
-        System.out.println();
+        for(Stock stock : analyzer.getStocks()) {
+            System.out.println(stock
+                    + " mean: " + stock.getStatistics().getMean());
+            System.out.println(stock
+                    + " variance: " + stock.getStatistics().getStandardDeviation());
+        }
         //TODO: U will need to display all coefficients from every Stock in allStocks
 
         //This is 2nd part. There are 2 kinds of portfolio: Markovitz and Tobin
         analyzer.createMarkovitzPortfolio();
         //Markovitz portfolio with minimum risk
         analyzer.getMarkovitzPortfolio().minimumRisk();
+        System.out.println("Minimum risk portfolio");
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
+        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getProfit() *365 + "%");
+
+        analyzer.getMarkovitzPortfolio().maximumProfit();
+        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
+        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
+        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getProfit() *365  + "%");
 
         //Markovitz portfolio with minimum given profit level of 0.00811%, where me minimize risk level:
-        analyzer.getMarkovitzPortfolio().minimizeRisk(0.00811);
+        analyzer.getMarkovitzPortfolio().minimizeRisk(9/365);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit()  + "%");
 
         /* Just doesnt work
         //Markovitz portfolio with given risk level 0,5%, where we maximize profit

@@ -32,6 +32,8 @@ public class YahooDataLoader {
         String queryText = BuildHistoricalDataRequest(symbol, startDate, endDate, frequency);
         String url = String.format("%s%s", baseURL, queryText);
 
+        System.out.println(url);
+
         String csvLine;
         ArrayList<Double> pricesList = new ArrayList<>();
 

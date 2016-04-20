@@ -20,7 +20,7 @@ public class TestMarkovitzPortfolio {
         analyzer.addStock(gazProm);
 
         //Doing the same for another 2 Stocks:
-        double[] pricesGMKNikel = {5980.00,5865.00, 6405.00, 6656.00, 6719.00, 7060.00,7230.00,
+        double[] pricesGMKNikel = {5980.00,5865.00, 6405.00, 6656.00, 6719.00, 7060.00, 7230.00,
                 7320.00, 8033.00, 8820.00, 8080.00, 11610.00, 11182.00};
         Stock gMKNikel = new Stock("GMKNorNikel", "GMKNN", pricesGMKNikel);
         analyzer.addStock(gMKNikel);
@@ -31,6 +31,11 @@ public class TestMarkovitzPortfolio {
         analyzer.addStock(mechel);
 
         analyzer.calculateStocksCoefficients(true);
+        analyzer.getStocks().stream().forEach(stock -> {
+            System.out.println(stock.getName());
+            System.out.println(stock.getStatistics());
+            System.out.println("--------------------");
+        });
 
         analyzer.createMarkovitzPortfolio();
 
@@ -47,7 +52,7 @@ public class TestMarkovitzPortfolio {
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
         System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
 
-        analyzer.getMarkovitzPortfolio().minimizeRisk(2d);
+        analyzer.getMarkovitzPortfolio().minimizeRisk(4d);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
