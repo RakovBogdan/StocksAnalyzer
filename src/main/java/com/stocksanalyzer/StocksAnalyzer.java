@@ -98,17 +98,18 @@ public class StocksAnalyzer {
         analyzer.loadStock("Coca-Cola", "KO");
         analyzer.loadStock("Ford", "F");
         analyzer.loadStock("Chevron", "CVX");
+        analyzer.loadStock("P&G", "PG");
 
         //This is the first part. Every Stock will get its MathStatistics object calculated
         //U have to choose percentage or non percentage mode
         analyzer.calculateStocksCoefficients(false);
         //After calculations, u can get coefficients of mean and skewness for the first Stock like this:
-        for(Stock stock : analyzer.getStocks()) {
-            System.out.println(stock
-                    + " mean: " + stock.getStatistics().getMean());
-            System.out.println(stock
-                    + " variance: " + stock.getStatistics().getStandardDeviation());
-        }
+        analyzer.calculateStocksCoefficients(true);
+        analyzer.getStocks().stream().forEach(stock -> {
+            System.out.println(stock.getName());
+            System.out.println(stock.getStatistics());
+            System.out.println("--------------------");
+        });
         //TODO: U will need to display all coefficients from every Stock in allStocks
 
         //This is 2nd part. There are 2 kinds of portfolio: Markovitz and Tobin
@@ -126,7 +127,7 @@ public class StocksAnalyzer {
         System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getProfit() *365  + "%");
 
         //Markovitz portfolio with minimum given profit level of 0.00811%, where me minimize risk level:
-        analyzer.getMarkovitzPortfolio().minimizeRisk(9/365);
+        analyzer.getMarkovitzPortfolio().minimizeRisk(9);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
