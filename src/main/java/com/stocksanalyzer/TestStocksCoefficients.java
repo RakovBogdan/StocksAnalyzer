@@ -36,28 +36,28 @@ public class TestStocksCoefficients {
         System.out.println("Mimimum Risk Portfolio:");
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
         System.out.println("--------------------");
 
         System.out.println("Portfolio with given minimum profit:");
         analyzer.getMarkovitzPortfolio().minimizeRisk(0.13);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit() + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
         System.out.println("--------------------");
 
         System.out.println("Maximum Profit Portfolio:");
         analyzer.getMarkovitzPortfolio().maximumProfit();
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage());
         System.out.println("--------------------");
 
         System.out.println("Portfolio with given maximum risk:");
         analyzer.getMarkovitzPortfolio().maximizeProfit(0.1419);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage());
         System.out.println("--------------------");
     }
 }

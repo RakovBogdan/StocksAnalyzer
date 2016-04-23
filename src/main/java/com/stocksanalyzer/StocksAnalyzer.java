@@ -42,16 +42,17 @@ public class StocksAnalyzer {
                                 endDay, endMonth, endYear, frequency);
     }
 
+    //inPercentage
     public void setNonRiskSecurity(double nonRiskSecurityYearProfit) {
         switch (this.yahooDataLoader.getFrequency()) {
             case "d" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/365);
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/(365*100));
                 break;
             case "m" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/12);
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/(12*100));
                 break;
             case "y" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit);
+                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit * 100);
                 break;
         }
     }
@@ -119,28 +120,40 @@ public class StocksAnalyzer {
         System.out.println("Minimum risk portfolio");
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getProfit() *365 + "%");
+        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
 
         analyzer.getMarkovitzPortfolio().maximumProfit();
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getProfit() *365  + "%");
+        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
 
-        //Markovitz portfolio with minimum given profit level of 0.00811%, where me minimize risk level:
-        analyzer.getMarkovitzPortfolio().minimizeRisk(9);
+        //Markovitz portfolio with minimum given profit level of 18%, where me minimize risk level:
+        analyzer.getMarkovitzPortfolio().minimizeRisk(15);
         //TODO: U will need to display portfolio, also its risk and profit rates
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit()  + "%");
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
 
         /* Just doesnt work
         //Markovitz portfolio with given risk level 0,5%, where we maximize profit
         analyzer.getMarkovitzPortfolio().maximizeProfit(0.005d);
         System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
         System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getProfit());
+        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage());
         */
 
+
+        analyzer.createTobinPortfolio();
+        analyzer.setNonRiskSecurity(14);
+
+        analyzer.getTobinPortfolio().maximumProfit();
+        System.out.println("\n" + "Maximum Profit Portfolio:\n" + analyzer.getTobinPortfolio());
+
+        analyzer.getTobinPortfolio().minimumRisk();
+        System.out.println("\n" + "Minimum Risk Portfolio:\n" + analyzer.getTobinPortfolio());
+
+        analyzer.getTobinPortfolio().minimizeRisk(17);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
     }
 }

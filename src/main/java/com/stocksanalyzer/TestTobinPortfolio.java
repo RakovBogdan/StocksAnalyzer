@@ -32,12 +32,11 @@ public class TestTobinPortfolio {
         analyzer.calculateStocksCoefficients(true);
 
         analyzer.createTobinPortfolio();
-        analyzer.setNonRiskSecurity(0.1317);
-        analyzer.getTobinPortfolio().maximumProfit();
+        analyzer.setNonRiskSecurity(15);
+        analyzer.getTobinPortfolio().minimumRisk();
 
         //TODO: U will need to display portfolio, also its risk and profit rates
-        System.out.println(Arrays.asList(analyzer.getTobinPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getTobinPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getTobinPortfolio().getProfit());
+        System.out.println(analyzer.getTobinPortfolio());
+
     }
 }

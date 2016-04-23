@@ -11,7 +11,7 @@ public class MarkovitzPortfolio {
 
     private Map<Stock, Double> portfolio = new LinkedHashMap<> (); //  Markovitz portfolio
     private double risk; // portfolio risk
-    private double profit; // portfolio profit
+    private double annualProfitPercantage; // portfolio profit
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
     public MarkovitzPortfolio(List<Stock> allStocks) {
@@ -22,6 +22,12 @@ public class MarkovitzPortfolio {
                 System.out.println("Stock " + stock.getName() +
                     " was removed due to its mean being < 0");
         }
+    }
+
+    public String toString() {
+        return Arrays.asList(portfolio) + "\n" +
+                "AnnualProfit: " + this.annualProfitPercantage + "%\n" +
+                "Risk: " + this.risk + "%\n";
     }
 
     //returns minimum possible
@@ -38,10 +44,10 @@ public class MarkovitzPortfolio {
         double profit = 0.0d;
         for (int i=0; i<allStocks.size();i++) {
             portfolio.put(allStocks.get(i), sol.get(i));
-            profit += sol.get(i)* MathStatistics.mean(allStocks.get(i).getStatistics().getNormProfit());
+            profit += sol.get(i)* MathStatistics.mean(MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
         }
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
-        this.profit = profit * 100;
+        this.annualProfitPercantage = profit * 100 * 365;
 
     }
 
@@ -65,7 +71,7 @@ public class MarkovitzPortfolio {
             portfolio.put(allStocks.get(i), sol.get(i));
         }
 
-        this.profit = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100;
+        this.annualProfitPercantage = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100 * 365;
         this.risk = 0;
     }
 
@@ -74,7 +80,7 @@ public class MarkovitzPortfolio {
     // Profit in Percentage! so if u want minimum 10% of profit, u just pass 10
     public void minimizeRisk(double profitPercantage) {
         portfolio.clear();
-        this.profit = profitPercantage;
+        this.annualProfitPercantage = profitPercantage;
         double[] means = new double[allStocks.size()];
         for(int i=0; i < means.length; i++) {
             means[i] = MathStatistics.mean(MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
@@ -82,7 +88,7 @@ public class MarkovitzPortfolio {
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
         op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
-        op.setInputParameter("profit", profitPercantage/100);
+        op.setInputParameter("profit", profitPercantage/(100*365));
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2) == 1");
@@ -121,7 +127,7 @@ public class MarkovitzPortfolio {
             portfolio.put(allStocks.get(i), sol.get(i));
         }
         this.risk = 10000;
-        this.profit = profit;
+        this.annualProfitPercantage = profit;
     }
 
     public Map<Stock, Double> getPortfolio() {
@@ -136,12 +142,12 @@ public class MarkovitzPortfolio {
         this.risk = risk;
     }
 
-    public double getProfit() {
-        return profit;
+    public double getAnnualProfitPercantage() {
+        return annualProfitPercantage;
     }
 
-    public void setProfit(double profit) {
-        this.profit = profit;
+    public void setAnnualProfitPercantage(double profit) {
+        this.annualProfitPercantage = profit;
     }
 
     public List<Stock> getAllStocks() {
