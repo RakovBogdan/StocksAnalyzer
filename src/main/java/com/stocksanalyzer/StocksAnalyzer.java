@@ -71,6 +71,17 @@ public class StocksAnalyzer {
 
     public void createMarkovitzPortfolio() {
         this.markovitzPortfolio = new MarkovitzPortfolio(allStocks);
+        switch (this.yahooDataLoader.getFrequency()) {
+            case "d" :
+                this.markovitzPortfolio.setDateFrequencyMultiplier(365);
+                break;
+            case "m" :
+                this.markovitzPortfolio.setDateFrequencyMultiplier(12);
+                break;
+            case "y" :
+                this.markovitzPortfolio.setDateFrequencyMultiplier(1);
+                break;
+        }
     }
 
     public TobinPortfolio getTobinPortfolio() {
@@ -79,6 +90,17 @@ public class StocksAnalyzer {
 
     public void createTobinPortfolio() {
         this.tobinPortfolio = new TobinPortfolio(allStocks);
+        switch (this.yahooDataLoader.getFrequency()) {
+            case "d" :
+                this.tobinPortfolio.setDateFrequencyMultiplier(365);
+                break;
+            case "m" :
+                this.tobinPortfolio.setDateFrequencyMultiplier(12);
+                break;
+            case "y" :
+                this.tobinPortfolio.setDateFrequencyMultiplier(1);
+                break;
+        }
     }
 
 
@@ -90,7 +112,7 @@ public class StocksAnalyzer {
         //two dates in integer format: day,month,year
         // last string is data frequency: "d" -daily, "m" - monthly, "y" - yearly
         //TODO: make Set Data range like here http://finance.yahoo.com/q/hp?s=GE
-        analyzer.setYahooDataLoader(17, 11, 2010, 17, 1, 2016, "d");
+        analyzer.setYahooDataLoader(1, 1, 2011, 1, 1, 2016, "d");
 
         //adding stock to allStocks, symbol YHOO is very important
         //TODO: when client types in first letter "Y", 10 results must be shown(like here http://finance.yahoo.com/lookup),
@@ -100,6 +122,8 @@ public class StocksAnalyzer {
         analyzer.loadStock("Ford", "F");
         analyzer.loadStock("Chevron", "CVX");
         analyzer.loadStock("P&G", "PG");
+        analyzer.loadStock("Apple", "AAPL");
+        analyzer.loadStock("IBM", "IBM");
 
         //This is the first part. Every Stock will get its MathStatistics object calculated
         //U have to choose percentage or non percentage mode
@@ -123,24 +147,21 @@ public class StocksAnalyzer {
         System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
 
         analyzer.getMarkovitzPortfolio().maximumProfit();
-        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio year profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
+        System.out.println("\n" + "Maximum Profit Portfolio:\n" + analyzer.getMarkovitzPortfolio());
 
-        //Markovitz portfolio with minimum given profit level of 18%, where me minimize risk level:
+        //Markovitz portfolio with minimum given annual profit level of 15%, where me minimize risk level:
         analyzer.getMarkovitzPortfolio().minimizeRisk(15);
-        //TODO: U will need to display portfolio, also its risk and profit rates
-        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk() + "%");
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage() + "%");
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getMarkovitzPortfolio());
 
-        /* Just doesnt work
-        //Markovitz portfolio with given risk level 0,5%, where we maximize profit
-        analyzer.getMarkovitzPortfolio().maximizeProfit(0.005d);
-        System.out.println(Arrays.asList(analyzer.getMarkovitzPortfolio().getPortfolio()));
-        System.out.println("portfolio risk: " + analyzer.getMarkovitzPortfolio().getRisk());
-        System.out.println("portfolio profit: " + analyzer.getMarkovitzPortfolio().getAnnualProfitPercantage());
-        */
+        analyzer.getMarkovitzPortfolio().minimizeRisk(20);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getMarkovitzPortfolio());
+
+        analyzer.getMarkovitzPortfolio().minimizeRisk(25);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getMarkovitzPortfolio());
+
+        analyzer.getMarkovitzPortfolio().minimizeRisk(30.5869);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getMarkovitzPortfolio());
+
 
 
         analyzer.createTobinPortfolio();
@@ -152,7 +173,13 @@ public class StocksAnalyzer {
         analyzer.getTobinPortfolio().minimumRisk();
         System.out.println("\n" + "Minimum Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
-        analyzer.getTobinPortfolio().minimizeRisk(17);
+        analyzer.getTobinPortfolio().minimizeRisk(15);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
+
+        analyzer.getTobinPortfolio().minimizeRisk(20);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
+
+        analyzer.getTobinPortfolio().minimizeRisk(25);
         System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
     }

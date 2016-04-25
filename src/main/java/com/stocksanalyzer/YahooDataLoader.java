@@ -7,6 +7,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  *
@@ -45,13 +46,14 @@ public class YahooDataLoader {
 
             while ((csvLine = br.readLine()) != null) {
                 String[] stockInfo = csvLine.split(",");
-                pricesList.add(Double.parseDouble(stockInfo[4]));
+                pricesList.add(Double.parseDouble(stockInfo[6]));
             }
 
         } catch(IOException ex) {
             System.out.println(ex);
         }
 
+        Collections.reverse(pricesList);
         double[] prices = new double[pricesList.size()];
         for(int i = 0; i < pricesList.size(); i++) prices[i] = pricesList.get(i);
         return new Stock(name, symbol, prices);

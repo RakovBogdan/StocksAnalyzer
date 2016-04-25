@@ -13,7 +13,7 @@ public class TobinPortfolio {
     private Map<Stock, Double> portfolio = new LinkedHashMap<> (); //  Markovitz portfolio
     private double risk;
     private double annualProfitPercantage;
-
+    private double dateFrequencyMultiplier;
     private Stock nonRiskProfitSecurity; // non-Risk security
     private List<Stock> allStocks = new ArrayList<>(); // ArrayList of all stocks in portfolio
 
@@ -55,7 +55,7 @@ public class TobinPortfolio {
             }
         }
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
-        this.annualProfitPercantage = profit * 100 * 365;
+        this.annualProfitPercantage = profit * 100 * dateFrequencyMultiplier;
 
     }
 
@@ -79,7 +79,7 @@ public class TobinPortfolio {
             portfolio.put(allStocks.get(i), sol.get(i));
         }
 
-        this.annualProfitPercantage = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100 * 365;
+        this.annualProfitPercantage = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100 * dateFrequencyMultiplier;
         this.risk = 0;
     }
 
@@ -97,7 +97,7 @@ public class TobinPortfolio {
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
         op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
-        op.setInputParameter("profit", profitPercantage/(100*365));
+        op.setInputParameter("profit", profitPercantage / (100 * dateFrequencyMultiplier));
         op.setInputParameter("mean", new DoubleMatrixND(new int[]{1, allStocks.size()}, means));
         op.setObjectiveFunction("minimize", "x*cov*x'");
         op.addConstraint(" sum(x,2) == 1");
@@ -164,6 +164,14 @@ public class TobinPortfolio {
 
     public Stock getNonRiskProfit() {
         return nonRiskProfitSecurity;
+    }
+
+    public double getDateFrequencyMultiplier() {
+        return dateFrequencyMultiplier;
+    }
+
+    public void setDateFrequencyMultiplier(double dateFrequencyMultiplier) {
+        this.dateFrequencyMultiplier = dateFrequencyMultiplier;
     }
 
     public void setNonRiskProfit(double nonRiskProfit) {
