@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class TestStocksCoefficients {
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer();
-        analyzer.setYahooDataLoader(20, 11, 2015, 20, 9, 2016, "m");
+        analyzer.setYahooDataLoader(20, 11, 2015, 20, 9, 2016, DataFrequency.MONTHLY);
 
         double[] pricesMCD = {96.90, 97.41, 97.16, 97.00, 96.37,
                 95.13, 95.00, 96.19, 97.30, 97.54};

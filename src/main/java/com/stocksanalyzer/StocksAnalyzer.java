@@ -37,24 +37,15 @@ public class StocksAnalyzer {
     }
 
     public void setYahooDataLoader(int startDay, int startMonth, int startYear,
-                              int endDay, int endMonth, int endYear, String frequency) {
+                              int endDay, int endMonth, int endYear, DataFrequency dateFrequency) {
         this.yahooDataLoader = new YahooDataLoader(startDay, startMonth, startYear,
-                                endDay, endMonth, endYear, frequency);
+                                endDay, endMonth, endYear, dateFrequency);
     }
 
     //inPercentage
     public void setNonRiskSecurity(double nonRiskSecurityYearProfit) {
-        switch (this.yahooDataLoader.getFrequency()) {
-            case "d" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/(365*100));
-                break;
-            case "m" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/(12*100));
-                break;
-            case "y" :
-                this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit * 100);
-                break;
-        }
+        this.tobinPortfolio.setNonRiskProfit(nonRiskSecurityYearProfit/
+                (this.yahooDataLoader.getDataFrequency().getTimesInOneYear() * 100));
     }
 
     public void addStock(Stock stock) {
@@ -71,17 +62,7 @@ public class StocksAnalyzer {
 
     public void createMarkovitzPortfolio() {
         this.markovitzPortfolio = new MarkovitzPortfolio(allStocks);
-        switch (this.yahooDataLoader.getFrequency()) {
-            case "d" :
-                this.markovitzPortfolio.setDateFrequencyMultiplier(365);
-                break;
-            case "m" :
-                this.markovitzPortfolio.setDateFrequencyMultiplier(12);
-                break;
-            case "y" :
-                this.markovitzPortfolio.setDateFrequencyMultiplier(1);
-                break;
-        }
+        this.markovitzPortfolio.setDateFrequencyMultiplier(this.yahooDataLoader.getDataFrequency().getTimesInOneYear());
     }
 
     public TobinPortfolio getTobinPortfolio() {
@@ -90,17 +71,7 @@ public class StocksAnalyzer {
 
     public void createTobinPortfolio() {
         this.tobinPortfolio = new TobinPortfolio(allStocks);
-        switch (this.yahooDataLoader.getFrequency()) {
-            case "d" :
-                this.tobinPortfolio.setDateFrequencyMultiplier(365);
-                break;
-            case "m" :
-                this.tobinPortfolio.setDateFrequencyMultiplier(12);
-                break;
-            case "y" :
-                this.tobinPortfolio.setDateFrequencyMultiplier(1);
-                break;
-        }
+        this.tobinPortfolio.setDateFrequencyMultiplier(this.yahooDataLoader.getDataFrequency().getTimesInOneYear());
     }
 
 
@@ -110,9 +81,8 @@ public class StocksAnalyzer {
 
         //Loading data with using YahooDataLoader
         //two dates in integer format: day,month,year
-        // last string is data frequency: "d" -daily, "m" - monthly, "y" - yearly
         //TODO: make Set Data range like here http://finance.yahoo.com/q/hp?s=GE
-        analyzer.setYahooDataLoader(1, 1, 2011, 1, 1, 2016, "d");
+        analyzer.setYahooDataLoader(1, 1, 2011, 1, 1, 2016, DataFrequency.DAILY);
 
         //adding stock to allStocks, symbol YHOO is very important
         //TODO: when client types in first letter "Y", 10 results must be shown(like here http://finance.yahoo.com/lookup),

@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class TestTobinPortfolio {
     public static void main(String[] args) {
         StocksAnalyzer analyzer = new StocksAnalyzer();
-        analyzer.setYahooDataLoader(17, 11, 2015, 17, 1, 2016, "m");
+        analyzer.setYahooDataLoader(17, 11, 2015, 17, 1, 2016, DataFrequency.MONTHLY);
         //Creation of new stock and adding it to analyzer:
         //Prices array
         double[] pricesGazprom = {139.20, 135.50, 128.77,141.70, 148.96, 132.00, 131.95, 137.90,

@@ -18,19 +18,19 @@ public class YahooDataLoader {
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private String frequency;
+    private DataFrequency dataFrequency;
 
     public YahooDataLoader(int startDay, int startMonth, int startYear,
-                           int endDay, int endMonth, int endYear, String frequency) {
+                           int endDay, int endMonth, int endYear, DataFrequency dataFrequency) {
         this.startDate = LocalDate.of(startYear,startMonth,startDay);
         this.endDate = LocalDate.of(endYear,endMonth,endDay);
-        this.frequency = frequency;
+        this.dataFrequency = dataFrequency;
     }
 
     public Stock getData(String name, String symbol) {
 
         String baseURL = "http://real-chart.finance.yahoo.com/table.csv?";
-        String queryText = BuildHistoricalDataRequest(symbol, startDate, endDate, frequency);
+        String queryText = BuildHistoricalDataRequest(symbol, startDate, endDate, dataFrequency.getCodeForYahooDataLoader());
         String url = String.format("%s%s", baseURL, queryText);
 
         System.out.println(url);
@@ -121,12 +121,13 @@ public class YahooDataLoader {
         this.endDate = endDate;
     }
 
-    public String getFrequency() {
-        return frequency;
+
+    public DataFrequency getDataFrequency() {
+        return dataFrequency;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public void setDataFrequency(DataFrequency dataFrequency) {
+        this.dataFrequency = dataFrequency;
     }
 
 }
