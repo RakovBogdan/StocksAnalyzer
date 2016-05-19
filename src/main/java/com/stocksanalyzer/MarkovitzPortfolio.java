@@ -1,5 +1,7 @@
 package com.stocksanalyzer;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import com.jom.DoubleMatrixND;
@@ -44,7 +46,8 @@ public class MarkovitzPortfolio {
 
         double profit = 0.0d;
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
             profit += sol.get(i)* MathStatistics.mean(MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
         }
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
@@ -69,7 +72,8 @@ public class MarkovitzPortfolio {
         DoubleMatrixND sol = op.getPrimalSolution("x");
 
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
         }
 
         this.annualProfitPercantage = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100 * dateFrequencyMultiplier;
@@ -98,7 +102,8 @@ public class MarkovitzPortfolio {
 
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
         }
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
     }
@@ -115,20 +120,22 @@ public class MarkovitzPortfolio {
         OptimizationProblem op = new OptimizationProblem();
         op.addDecisionVariable("x", false, new int[]{1, allStocks.size()}, 0.0d, 1.0d);
         op.setInputParameter("cov", MathStatistics.stocksCovarianceMatrix(allStocks));
+        op.setInputParameter("test", MathStatistics.mean(MathStatistics.calculateNormProfit(allStocks.get(0).getPrices())));
         op.setInputParameter("means", new DoubleMatrixND(new int[]{allStocks.size(), 1}, means));
         op.setInputParameter("risk", riskInPercantage/100);
         op.setObjectiveFunction("maximize", "x * means");
         op.addConstraint(" sum(x,2) == 1");
-        //op.addConstraint("(x*cov*x')<=risk");
+        op.addConstraint(" x*cov*x' <= risk");
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
 
         double profit = op.getObjectiveFunction().evaluate("x", sol).get(0);
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
         }
         this.risk = 10000;
-        this.annualProfitPercantage = profit;
+        this.annualProfitPercantage = profit * 100 * dateFrequencyMultiplier;
     }
 
     public Map<Stock, Double> getPortfolio() {

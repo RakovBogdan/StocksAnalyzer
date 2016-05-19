@@ -4,6 +4,8 @@ import java.util.*;
 
 import com.jom.DoubleMatrixND;
 import com.jom.OptimizationProblem;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 /**
 /**
  * Created by RakovBogdan
@@ -47,10 +49,12 @@ public class TobinPortfolio {
         int stocksCount = allStocks.size();
         for (int i=0; i<stocksCount; i++) {
             if(i != stocksCount -1) {
-                portfolio.put(allStocks.get(i), sol.get(i));
+                portfolio.put(allStocks.get(i),
+                        new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
                 profit += sol.get(i) * MathStatistics.mean(MathStatistics.calculateNormProfit(allStocks.get(i).getPrices()));
             } else {
-                portfolio.put(allStocks.get(i), sol.get(i));
+                portfolio.put(allStocks.get(i),
+                        new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue()  * 100);
                 profit += sol.get(i) * allStocks.get(i).getStatistics().getMean();
             }
         }
@@ -76,7 +80,8 @@ public class TobinPortfolio {
         DoubleMatrixND sol = op.getPrimalSolution("x");
 
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue()  * 100);
         }
 
         this.annualProfitPercantage = op.getObjectiveFunction().evaluate("x", sol).get(0) * 100 * dateFrequencyMultiplier;
@@ -106,7 +111,8 @@ public class TobinPortfolio {
 
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++) {
-            portfolio.put(allStocks.get(i), sol.get(i));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue()  * 100);
         }
         this.risk = Math.sqrt(op.getObjectiveFunction().evaluate("x", sol).get(0))*100;
     }
@@ -129,8 +135,10 @@ public class TobinPortfolio {
         op.solve("ipopt");
         DoubleMatrixND sol = op.getPrimalSolution("x");
         for (int i=0; i<allStocks.size();i++)
-            portfolio.put(allStocks.get(i), sol.get(i));
-        portfolio.put(nonRiskProfitSecurity, sol.get(allStocks.size()));
+            portfolio.put(allStocks.get(i),
+                    new BigDecimal(sol.get(i)).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
+        portfolio.put(nonRiskProfitSecurity,
+                new BigDecimal(sol.get(allStocks.size())).setScale(4, RoundingMode.HALF_UP).doubleValue() * 100);
 
     }
 
