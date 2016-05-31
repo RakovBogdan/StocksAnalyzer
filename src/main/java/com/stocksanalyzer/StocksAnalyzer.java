@@ -88,12 +88,12 @@ public class StocksAnalyzer {
         //TODO: when client types in first letter "Y", 10 results must be shown(like here http://finance.yahoo.com/lookup),
 
 
-        analyzer.loadStock("Coca-Cola", "KO");
-        analyzer.loadStock("Ford", "F");
-        analyzer.loadStock("Chevron", "CVX");
-        analyzer.loadStock("P&G", "PG");
-        analyzer.loadStock("Apple", "AAPL");
-        analyzer.loadStock("IBM", "IBM");
+        analyzer.loadStock("Microsoft", "MSFT");
+        analyzer.loadStock("Tesla", "TSLA");
+        analyzer.loadStock("Amazon", "AMZN");
+        analyzer.loadStock("NVIDIA", "NVDA");
+        analyzer.loadStock("Intel", "INTC");
+        analyzer.loadStock("SAP SE", "SAP");
 
         //This is the first part. Every Stock will get its MathStatistics object calculated
         //U have to choose percentage or non percentage mode
@@ -107,6 +107,7 @@ public class StocksAnalyzer {
         });
         //TODO: U will need to display all coefficients from every Stock in allStocks
 
+        /*
         //This is 2nd part. There are 2 kinds of portfolio: Markovitz and Tobin
         analyzer.createMarkovitzPortfolio();
         //Markovitz portfolio with minimum risk
@@ -131,7 +132,7 @@ public class StocksAnalyzer {
 
         analyzer.getMarkovitzPortfolio().minimizeRisk(30.5869);
         System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getMarkovitzPortfolio());
-
+        */
 
 
         analyzer.createTobinPortfolio();
@@ -143,13 +144,13 @@ public class StocksAnalyzer {
         analyzer.getTobinPortfolio().minimumRisk();
         System.out.println("\n" + "Minimum Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
-        analyzer.getTobinPortfolio().minimizeRisk(15);
-        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
-
         analyzer.getTobinPortfolio().minimizeRisk(20);
         System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
-        analyzer.getTobinPortfolio().minimizeRisk(25);
+        analyzer.getTobinPortfolio().minimizeRisk(30);
+        System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
+
+        analyzer.getTobinPortfolio().minimizeRisk(40);
         System.out.println("\n" + "Minimize Risk Portfolio:\n" + analyzer.getTobinPortfolio());
 
     }
